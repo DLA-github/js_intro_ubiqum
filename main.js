@@ -217,15 +217,23 @@ toSortString("webmaster");
 // For example, if x = "prince of persia" then the output should be "Prince Of Persia".
 
 function firstLetterUper(x) {
-    var i = x.length;
-    x = x.split(" ");
+    x = x.toLowerCase().split(" ");
+    console.log(x);
+    var i;
+    var y = [];
 
-    x[0][0] = x[0][0].toUpperCase();
+    // y[0] = x[0].replace(x[0].charAt(0), x[0].charAt(0).toUpperCase());
+    // y[1] = x[1].replace(x[1].charAt(0), x[1].charAt(0).toUpperCase());
+    // y[2] = x[2].replace(x[2].charAt(0), x[2].charAt(0).toUpperCase());
 
-    while (i > 0) {
+    // console.log(y);
 
+    for (i = 0; i < x.length; i++) {
+        y[i] = x[i].replace(x[i].charAt(0), x[i].charAt(0).toUpperCase());
     }
 
+    y = y.join(" ");
+    console.log(y);
     return;
 
 }

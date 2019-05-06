@@ -4841,6 +4841,21 @@ var data = {
     }]
 }
 
+//play around with JSON and JS
+
+var aux = JSON.stringify(data, null, 2);
+console.log(aux[1140]);
+
+
+
+
+
+
+
+
+
+
+
 
 // display desired info in a table on the HTML
 

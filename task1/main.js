@@ -9,14 +9,14 @@ var ignasiAge = 32;
 var ageDiff;
 myColor = ["Red", "Green", "White", "Black"];
 
-ageDiff = myAge - ignasiAge;
+
 
 // show results
 
-console.log(myName + " & " + myAge + " old");
+console.log(myName + " & " + myAge + " years old");
 console.log(myAge + ignasiAge);
 console.log(ageDiff);
-
+ageDiff = myAge - ignasiAge;
 // i'm older than 21??
 
 if (myAge > 21) {
@@ -136,7 +136,7 @@ function getValueGivenPosition(array, i) {
     console.log(array[i]);
     return;
   } else {
-    console.log("index error. try an index below " + (array.length - 1));
+    console.log("index error. Try a lower index than " + (array.length - 1));
     return;
   }
 }
@@ -183,12 +183,11 @@ changeArrayToString(myColor);
 function reverseNumber(x) {
   //number to a string
   var y = x.toString();
-
   //declaration and initial values
-  var j = y.length;
-  var z = y[y.length - 1];
-  while (j - 1 > 0) {
-    z += y[j - 2];
+  var j = y.length - 1;
+  var z = y[j];
+  while (j > 0) {
+    z += y[j - 1];
     j--;
   }
   //string to a number
@@ -196,7 +195,7 @@ function reverseNumber(x) {
   console.log(z);
   return;
 }
-var num = 32443;
+var num = 166778899;
 reverseNumber(num);
 
 // Exercise 2: Write a JavaScript function that returns a string in alphabetical order.
@@ -206,8 +205,12 @@ function toSortString(x) {
   var x = x
     .split("")
     .sort()
-    .toString()
-    .replace(/,/g, "");
+    .join("");
+
+  //another way after sort
+  //.toString()
+  //.replace(/,/g, "");
+
   console.log(x);
   return;
 }
@@ -219,7 +222,6 @@ toSortString("webmaster");
 
 function firstLetterUper(x) {
   x = x.toLowerCase().split(" ");
-  console.log(x);
   var i;
   var y = [];
 
@@ -230,7 +232,7 @@ function firstLetterUper(x) {
   // console.log(y);
 
   for (i = 0; i < x.length; i++) {
-    y[i] = x[i].replace(x[i].charAt(0), x[i].charAt(0).toUpperCase());
+    y.push(x[i].replace(x[i].charAt(0), x[i].charAt(0).toUpperCase()));
   }
 
   y = y.join(" ");

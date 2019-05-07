@@ -4841,18 +4841,6 @@ var data = {
     }]
 }
 
-//play around with JSON and JS
-
-var aux = JSON.stringify(data, null, 2);
-console.log(aux[1140]);
-
-
-
-
-
-
-
-
 
 
 
@@ -4860,24 +4848,89 @@ console.log(aux[1140]);
 // display desired info in a table on the HTML
 
 
-var i;
-var x = [];
-var mname = [];
-var text = [];
 
 x = data.results[0].members; //to simplify access to the object
 
+function showAllMembers() {
+    var mname = [];
+    var text = [];
+    for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
+
+        var textHeader = "<thead><tr><th style='text-align:center'>Full Name</th><th style='text-align:center'>Party</th><th style='text-align:center'>State</th><th style='text-align:center'>Seniority</th><th style='text-align:center'>Percentage of votes with party</th></tr></thead>";
+
+        if (x[i].middle_name == null | "") {
+            mname[i] = "";
+        } else {
+            mname[i] = x[i].middle_name;
+        }
+
+        text += "<tr><td><a href='" + x[i].url + "'>" + x[i].last_name + ", " + mname[i] + x[i].first_name + "</a></td>" + "<td>" + x[i].party +
+            "</td>" + "<td>" + x[i].state + "</td>" + "<td>" + x[i].seniority + "</td>" + "<td>" + x[i].votes_with_party_pct + "% </td></tr>";
+    }
+    document.getElementById("senate-data").innerHTML = textHeader + text; //show info
+    return;
+}
 
 
-for (i = 0; i < x.length; i++) { //loop for make the required HTML table 
 
-    if (x[i].middle_name == null | "") {
-        mname[i] = "";
-    } else {
-        mname[i] = x[i].middle_name;
+function uncheck(value) {
+    if (value == "checkR") {
+        document.getElementById("checkD").checked = false;
+        document.getElementById("checkI").checked = false;
+        return;
+    }
+    if (value == "checkD") {
+        document.getElementById("checkR").checked = false;
+        document.getElementById("checkI").checked = false;
+        return
+    }
+    if (value == "checkI") {
+        document.getElementById("checkR").checked = false;
+        document.getElementById("checkD").checked = false;
+        return;
     }
 
-    text += "<tr><td>" + x[i].last_name + ", " + mname[i] + x[i].first_name + "</td>" + "<td>" + x[i].party +
-        "</td>" + "<td>" + x[i].state + "</td>" + "<td>" + x[i].seniority + "</td>" + "<td>" + x[i].votes_with_party_pct + "% </td></tr>";
 }
-document.getElementById("senate-data").innerHTML = text; //show info
+
+
+
+function filterTableByParty(value) {
+
+    var textHeader = "<thead><tr><th style='text-align:center'>Full Name</th><th style='text-align:center'>Party</th><th style='text-align:center'>State</th><th style='text-align:center'>Seniority</th><th style='text-align:center'>Percentage of votes with party</th></tr></thead>";
+    var mname = [];
+    var text = [];
+    for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
+        if (x[i].party == value) {
+            if (x[i].middle_name == null | "") {
+                mname[i] = "";
+            } else {
+                mname[i] = x[i].middle_name;
+            }
+            text += "<tr><td><a href='" + x[i].url + "'>" + x[i].last_name + ", " + mname[i] + x[i].first_name + "</a></td>" + "<td>" + x[i].party +
+                "</td>" + "<td>" + x[i].state + "</td>" + "<td>" + x[i].seniority + "</td>" + "<td>" + x[i].votes_with_party_pct + "% </td></tr>";
+        }
+    }
+
+    document.getElementById("senate-data").innerHTML = textHeader + text;
+    return;
+
+}
+
+showAllMembers();
+
+var allCheckboxes = document.querySelectorAll('input[type=checkbox]');
+console.log(allCheckboxes);
+
+for (var i = 0; i < allCheckboxes.length; i++) {
+    allCheckboxes[i].addEventListener('change', function () {
+        var checkInput = this.name;
+        console.log(this.value);
+        if (this.checked == false) {
+            showAllMembers();
+            return;
+        }
+        uncheck(checkInput);
+        filterTableByParty(this.value);
+        return;
+    });
+}

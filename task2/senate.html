@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
@@ -52,8 +53,10 @@
             impeached by the
             House.</p>
 
-        <form class="text-center" name="filter" id="FilterForm" action="" method="">
-            <div class="row">
+        <a href="#" id="showList">Show List Of Members</a>
+
+        <form class="text-center" name="filter" id="filterForm" action="" method="">
+            <div class="row" id="hidden">
                 <div class="col-sm-9">
                     <div class="col-sm-3"><input type="checkbox" value="R" name="checkR" id="checkR"> Republican</input>
                     </div>
@@ -124,7 +127,7 @@
             <table class="table table-hover table-condensed text-center" id="senate-data"></table>
         </div>
     </div>
-    <script src="pro-congress-113-senate.js"></script>
+    <script src="senate.js"></script>
 
 </body>
 

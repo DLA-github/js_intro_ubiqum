@@ -4845,36 +4845,77 @@ var data = {
 
 
 
-// display desired info in a table on the HTML
 
-// var states = ["TN", "NH", "WI", "WY", "MT", "AK", "CO", "CT", "NJ", "AR", "CA", "OH", "NC", "WA", "MD", "PA", "GA", "IN", "OK", "MS", "ME", "DE", "TX", "MA", "ID", "IL", "NE", "MN", "NY", "IA", "UT", "NV", "VA", "LA", "MO", "FL", "HI", "OR", "NM", "AL", "WV", "RI", "VT", "MI", "AZ", "KS", "AR", "SC", "KY"];
-// console.log(states.sort());
+/////////////////// INIT ///////////////////////////////////////////////////////
 
-x = data.results[0].members; //to simplify access to the object
+x = data.results[0].members; //simplified acces to data.
 
-function showAllMembers() {
-    var mname = [];
-    var text = [];
-    for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
 
-        var textHeader = "<thead><tr><th style='text-align:center'>Full Name</th><th style='text-align:center'>Party</th><th style='text-align:center'>State</th><th style='text-align:center'>Seniority</th><th style='text-align:center'>Percentage of votes with party</th></tr></thead>";
+////////////////////////////////////////////////////////////////////////////////
+// FUNCTIONS ///////////////////////////////////////////////////////////////////
 
-        if (x[i].middle_name == null | "") {
-            mname[i] = "";
-        } else {
-            mname[i] = x[i].middle_name;
-        }
 
-        text += "<tr><td><a href='" + x[i].url + "'>" + x[i].last_name + ", " + mname[i] + x[i].first_name + "</a></td>" + "<td>" + x[i].party +
-            "</td>" + "<td>" + x[i].state + "</td>" + "<td>" + x[i].seniority + "</td>" + "<td>" + x[i].votes_with_party_pct + "% </td></tr>";
-    }
-    document.getElementById("senate-data").innerHTML = textHeader + text; //show info
+function showHeaderTable() {
+
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var fullName = document.createElement("th");
+    fullName.append(" Full Name");
+    var party = document.createElement("th");
+    party.append(" Party");
+    var state = document.createElement("th");
+    state.append(" State");
+    var seniority = document.createElement("th");
+    seniority.append("Seniority");
+    var votes = document.createElement("th");
+    votes.append("Percentage of votes with party");
+    myTHeader.append(fullName, party, state, seniority, votes);
+    //myTHeader.setAttribute("style", "text-align: 'center';");
+    document.getElementById("senate-data").append(myTHeader);
+
     return;
 }
 
 
 
+
+function showAllMembers(value) {
+    document.getElementById("senate-data").innerHTML = "";
+    document.getElementById("hidden").style.display = "block";
+    document.getElementById("showList").style.display = "none";
+    console.log(value);
+
+    showHeaderTable();
+    var myTBody = document.createElement("tbody");
+
+    var myTable = value.map(function (tr) {
+        if (tr.middle_name == null) {
+            tr.middle_name = "";
+        }
+        var myTr = document.createElement("tr");
+        var tdFullName = document.createElement("td");
+        var linkName = document.createElement("a");
+        linkName.setAttribute("href", tr.url);
+        linkName.append(tr.last_name + "," + tr.middle_name + tr.first_name);
+        tdFullName.append(linkName);
+        var tdParty = document.createElement("td");
+        tdParty.append(tr.party);
+        var tdState = document.createElement("td");
+        tdState.append(tr.state);
+        var tdSeniority = document.createElement("td");
+        tdSeniority.append(tr.seniority);
+        var tdVotes = document.createElement("td");
+        tdVotes.append(tr.votes_with_party_pct + "%");
+        myTr.setAttribute("style", "text-align:'center';");
+        myTr.append(tdFullName, tdParty, tdState, tdSeniority, tdVotes);
+        myTBody.append(myTr);
+        document.getElementById("senate-data").append(myTBody);
+    });
+
+}
+
+
 function uncheck(value) {
+    document.getElementById("byState").value = "";
     if (value == "checkR") {
         document.getElementById("checkD").checked = false;
         document.getElementById("checkI").checked = false;
@@ -4893,74 +4934,88 @@ function uncheck(value) {
 
 }
 
-
-
 function filterTableByParty(value) {
     console.log(value);
-    var textHeader = "<thead><tr><th style='text-align:center'>Full Name</th><th style='text-align:center'>Party</th><th style='text-align:center'>State</th><th style='text-align:center'>Seniority</th><th style='text-align:center'>Percentage of votes with party</th></tr></thead>";
-    var mname = [];
-    var text = [];
-    for (var i = 0; i < value.length; i++) {
-        for (var j = 0; j < x.length; j++) { //loop for make the required HTML table 
-            if (x[j].party == value) {
-                if (x[j].middle_name == null | "") {
-                    mname[j] = "";
-                } else {
-                    mname[j] = x[j].middle_name;
-                }
-                text += "<tr><td><a href='" + x[j].url + "'>" + x[j].last_name + ", " + mname[j] + x[j].first_name + "</a></td>" + "<td>" + x[j].party +
-                    "</td>" + "<td>" + x[j].state + "</td>" + "<td>" + x[j].seniority + "</td>" + "<td>" + x[j].votes_with_party_pct + "% </td></tr>";
+    var memberParty = [];
+    for (var j = 0; j < checkboxesChecked.length; j++) {
+        for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
+            if (x[i].party == value[j]) {
+                memberParty.push(x[i]);
             }
         }
     }
-    console.log(text);
-    document.getElementById("senate-data").innerHTML = textHeader + text;
+    showAllMembers(memberParty);
     return;
+
 }
 
 function filterTableByState(value) {
-    var textHeader = "<thead><tr><th style='text-align:center'>Full Name</th><th style='text-align:center'>Party</th><th style='text-align:center'>State</th><th style='text-align:center'>Seniority</th><th style='text-align:center'>Percentage of votes with party</th></tr></thead>";
-    var mname = [];
-    var text = [];
+    var memberState = [];
     for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
         if (x[i].state == value) {
-            if (x[i].middle_name == null | "") {
-                mname[i] = "";
-            } else {
-                mname[i] = x[i].middle_name;
-            }
-            text += "<tr><td><a href='" + x[i].url + "'>" + x[i].last_name + ", " + mname[i] + x[i].first_name + "</a></td>" + "<td>" + x[i].party +
-                "</td>" + "<td>" + x[i].state + "</td>" + "<td>" + x[i].seniority + "</td>" + "<td>" + x[i].votes_with_party_pct + "% </td></tr>";
+            memberState.push(x[i]);
         }
     }
-    document.getElementById("senate-data").innerHTML = textHeader + text;
+    showAllMembers(memberState);
     return;
 
 }
 
-showAllMembers();
+///////////////////////////////////////////////////////////////////////////////////
+// CALLS //////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
-var allCheckboxes = document.querySelectorAll('input[type=checkbox]');
-console.log(allCheckboxes);
-var checkboxchecked = [];
+
+document.getElementById("showList").addEventListener('click', function () { //shows list ALL of senate members
+    showAllMembers(x);
+});
+
+
+//code filter by party -- checkboxes
+
+var allCheckboxes = document.querySelectorAll('input[type=checkbox]'); //for addAddEventListeners to checkboxs
+//console.log(allCheckboxes);
+var checkboxesChecked = [];
 
 for (var i = 0; i < allCheckboxes.length; i++) {
     allCheckboxes[i].addEventListener('change', function () {
-        var checkInput = this.name;
-        if (this.checked == false) {
-            showAllMembers();
+
+        console.log(this.checked);
+        if (this.checked == false) { //if any of the checkbox is checked---unselect--show all of members
+            console.log("if");
+            var index = checkboxesChecked.indexOf(this.value);
+            console.log(index);
+            if (index >= 0) {
+                console.log("2if")
+                checkboxesChecked.splice(index, 1);
+                console.log(checkboxesChecked);
+            }
+            if (checkboxesChecked.length == 0) {
+                console.log("vacio");
+                showAllMembers(x);
+                return;
+            }
+
+            filterTableByParty(checkboxesChecked);
+
             return;
         }
-        checkboxchecked.push(this.value);
-        filterTableByParty(checkboxchecked);
+        checkboxesChecked.push(this.value);
+
+        // uncheck(checkInput); //only one filter
+        filterTableByParty(checkboxesChecked); //call for filter by party
         return;
     });
 }
 
+//code filter by state -- select
+
 document.getElementById("byState").addEventListener('change', function () {
-    console.log(this.value);
+    document.getElementById("checkI").checked = false;
+    document.getElementById("checkR").checked = false;
+    document.getElementById("checkD").checked = false;
     if (this.value == "") {
-        showAllMembers();
+        showAllMembers(x);
         return;
     }
     filterTableByState(this.value);

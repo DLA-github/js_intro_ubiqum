@@ -4852,6 +4852,8 @@ x = data.results[0].members; //simplified acces to data.
 
 var filterByState = false;
 var filterByParty = false;
+var filterMemberParty = [];
+var filterMemberState;
 
 ////////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
@@ -4937,7 +4939,10 @@ function showAllMembers(value) {
 
 function filterTableByParty(value) {
     // console.log(value);
+
+    //code to filter members by party--result in array memberParty
     var memberParty = [];
+
     for (var j = 0; j < checkboxesChecked.length; j++) {
         for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
             if (x[i].party == value[j]) {
@@ -4945,17 +4950,30 @@ function filterTableByParty(value) {
             }
         }
     }
-    showAllMembers(memberParty);
+
+    //use a globar variable to pass this value to others functions --multi-filters
+    filterMemberParty = memberParty;
+
+    //print result if just filterParty 
+    if (filterByState == false) {
+        showAllMembers(memberParty);
+        return;
+    }
+    //call for another filter (by State)
+    filterTableByState(memberParty, filterMemberState);
     return;
 
 }
 
-function filterTableByState(value) {
+
+
+
+function filterTableByState(array, value) {
 
     var memberState = [];
-    for (var i = 0; i < x.length; i++) { //loop for make the required HTML table 
-        if (x[i].state == value) {
-            memberState.push(x[i]);
+    for (var i = 0; i < array.length; i++) { //loop for make the required HTML table 
+        if (array[i].state == value) {
+            memberState.push(array[i]);
         }
     }
     showAllMembers(memberState);
@@ -4981,34 +4999,51 @@ var checkboxesChecked = [];
 
 for (var i = 0; i < allCheckboxes.length; i++) {
     allCheckboxes[i].addEventListener('change', function () {
+        filterByParty = true;
 
-        // console.log(this.checked);
         if (this.checked == false) { //if any of the checkbox is checked---unselect--show all of members
-            //console.log("if");
+
 
             //eliminate checkbox unchecked 
             var index = checkboxesChecked.indexOf(this.value);
-            //console.log(index);
-
             checkboxesChecked.splice(index, 1);
 
-            //console.log(checkboxesChecked);
+            //if NO filterParty && no filterState show all members & break 
+            if (filterByState == false) {
 
-            //if no checkbox checked show all members & break
-            if (checkboxesChecked.length == 0) {
-                showAllMembers(x);
+                if (checkboxesChecked.length == 0) {
+
+                    filterByParty = false;
+                    showAllMembers(x);
+                    return;
+                }
+
+
+                //call for YES filterParty && NO filterState
+                filterTableByParty(checkboxesChecked);
+
                 return;
             }
 
-            //call for filter.
+            //if filterState active && NO filterParty
+
+            if (checkboxesChecked.length == 0) {
+                filterByParty = false;
+                console.log("aqui");
+                filterTableByState(x, filterMemberState);
+                return;
+            }
+
+
+
+            //if YES filterParty && YES  filterState
             filterTableByParty(checkboxesChecked);
-
             return;
-        }
-        checkboxesChecked.push(this.value);
 
-        // uncheck(checkInput); //only one filter
-        filterTableByParty(checkboxesChecked); //call for filter by party
+        }
+        //ADD value to array filters && call filterParty
+        checkboxesChecked.push(this.value);
+        filterTableByParty(checkboxesChecked);
         return;
     });
 }
@@ -5016,12 +5051,32 @@ for (var i = 0; i < allCheckboxes.length; i++) {
 //code filter by state -- select
 
 document.getElementById("byState").addEventListener('change', function () {
-    console.log(memberParty);
-    if (this.value == "") {
+    console.log(filterByParty);
+    //global variable for use this value in others functions
+    filterMemberState = this.value;
 
-        showAllMembers(x);
+    //says that we are filtering by State
+    filterByState = true;
+
+    //DESELECT FILTER BY STATE
+    if (this.value == "") { //if we select nothing show all members is there isn't another filter, else show result of filterParty
+        filterByState = false;
+        if (filterByParty == false) {
+            showAllMembers(x);
+            return;
+        }
+        //call function with parameter equal to a global variable that contains the members filtered by party to show result
+        showAllMembers(filterMemberParty);
         return;
     }
-    filterTableByState(this.value);
+
+    //if NO filterParty
+    if (filterByParty == false) {
+        filterTableByState(x, this.value);
+        return;
+    }
+    //if YES filterParty
+    filterTableByState(filterMemberParty, this.value);
+
     return;
 });

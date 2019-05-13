@@ -4854,9 +4854,11 @@ allMembers = data.results[0].members; //simplified acces to data.
 //calculate numbers of members for each party
 
 var statistics = {
-    "Lest Engaged": [],
+    "Least Engaged": [],
+    "Best Engaged": [],
     "Party": [{
             "party": "D",
+            "ID": "Democrat",
             "Number": 0,
             "List members": [],
             "Average vote with Party": 0,
@@ -4867,6 +4869,7 @@ var statistics = {
         },
         {
             "party": "R",
+            "ID": "Republican",
             "Number": 0,
             "List members": [],
             "Average vote with Party": 0,
@@ -4877,6 +4880,7 @@ var statistics = {
         },
         {
             "party": "I",
+            "ID": "Independent",
             "Number": 0,
             "List members": [],
             "Average vote with Party": 0,
@@ -4897,8 +4901,9 @@ function calculateStatistics(value) {
     var memberParty = [];
     var avgParty = 0;
     var arrayVotesParty = [];
+
     for (var i = 0; i < allMembers.length; i++) {
-        arrayVotesParty.push(allMembers[i].votes_with_party_pct);
+
         if (allMembers[i].party == value) {
             memberParty.push(allMembers[i]);
         }
@@ -4920,20 +4925,36 @@ function calculateStatistics(value) {
 
 
     }
+
+
+    // for calculate least & most engaged
+
+    allMembers.forEach(function (element) {
+        arrayVotesParty.push(element.votes_with_party_pct);
+    });
     var sortList = arrayVotesParty.sort();
+
     var badMemberList = [];
-    var index = arrayVotesParty[Math.floor((allMembers.length / 10) + 1)];
-    for (var i = 0; i < allMembers.length; i++) {
-        if (allMembers[i].votes_with_party_pct <= index) {
-            badMemberList.push(allMembers[i]);
-        }
-    }
-    statistics["Lest Engaged"] = badMemberList;
+    var goodMemberList = [];
+
+    var indexMin = sortList[Math.floor((allMembers.length / 10) + 1)]; //index for least engaged
+    var indexMax = sortList[allMembers.length - (Math.floor((allMembers.length / 10) + 1))]; //index for most engaged
+
+
+    //least engaged
+    badMemberList.push(allMembers.filter(function (element) {
+        return element.votes_with_party_pct <= indexMin;
+    }));
+
+    //best engaged
+    goodMemberList.push(allMembers.filter(function (element) {
+        return element.votes_with_party_pct >= indexMax;
+    }));
 
 
 
-
-
+    statistics["Least Engaged"] = badMemberList;
+    statistics["Best Engaged"] = goodMemberList;
 
 
 }
@@ -4948,3 +4969,85 @@ for (var i = 0; i < party.length; i++) {
 }
 
 console.log(statistics);
+
+
+function showTableAtaGlance(value) {
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var party = document.createElement("th");
+    party.append("Party");
+    var numberReps = document.createElement("th");
+    numberReps.append("Number of Reps");
+    var votes = document.createElement("th");
+    votes.append("% voted with Party");
+    myTHeader.append(party, numberReps, votes);
+    document.getElementById("tableAtGlance").append(myTHeader)
+    var myTBody = document.createElement("tbody");
+
+
+    value.forEach(function (el) {
+
+        var trparty = document.createElement("tr");
+        var tdparty = document.createElement("td");
+        tdparty.append(el.ID);
+        var tdReps = document.createElement("td");
+        tdReps.append(el.Number);
+        var tdVotes = document.createElement("td");
+        tdVotes.append(el["Average vote with Party"]);
+        trparty.append(tdparty, tdReps, tdVotes);
+        myTBody.append(trparty);
+    });
+    document.getElementById("tableAtGlance").append(myTBody);
+    return;
+}
+
+
+function showTableEngaged(value, table) {
+
+    //show header
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var party = document.createElement("th");
+    party.append("Name");
+    var numberReps = document.createElement("th");
+    numberReps.append("Total Votes");
+    var votes = document.createElement("th");
+    votes.append("% votes with Party");
+    myTHeader.append(party, numberReps, votes);
+    document.getElementById(table).append(myTHeader)
+    //show body
+    var myTBody = document.createElement("tbody");
+
+    value.forEach(function (el) {
+        console.log(el);
+        if (el.middle_name == null) {
+            el.middle_name = "";
+        }
+        var myTr = document.createElement("tr");
+        var tdFullName = document.createElement("td");
+        var linkName = document.createElement("a");
+        linkName.setAttribute("href", el.url);
+        linkName.append(el.last_name + "," + el.middle_name + el.first_name);
+        tdFullName.append(linkName);
+        var tdTotalVotes = document.createElement("td");
+        tdTotalVotes.append(el.total_votes);
+        var tdWithParty = document.createElement("td");
+        tdWithParty.append(el.votes_with_party_pct);
+        myTr.append(tdFullName, tdTotalVotes, tdWithParty);
+        myTBody.append(myTr);
+        document.getElementById(table).append(myTBody);
+    });
+
+}
+
+
+
+
+var party = ["D", "R", "I"];
+
+
+for (var i = 0; i < party.length; i++) {
+    calculateStatistics(party[i]);
+}
+
+showTableAtaGlance(statistics.Party);
+showTableEngaged(statistics["Least Engaged"][0], "leastEngaged");
+showTableEngaged(statistics["Best Engaged"][0], "bestEngaged");

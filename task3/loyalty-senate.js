@@ -4850,245 +4850,235 @@ var data = {
 
 allMembers = data.results[0].members; //simplified acces to data.
 
-var filterByState = false;
-var filterByParty = false;
-var filterMemberParty = [];
-var filterMemberState;
 
-////////////////////////////////////////////////////////////////////////////////
-// FUNCTIONS ///////////////////////////////////////////////////////////////////
+//calculate numbers of members for each party
+
+var statistics = {
+    "Least Engaged": [],
+    "Most Engaged": [],
+    "Least Loyal": [],
+    "Most Loyal": [],
+    "Party": [{
+            "party": "D",
+            "ID": "Democrat",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+        },
+        {
+            "party": "R",
+            "ID": "Republican",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+        },
+        {
+            "party": "I",
+            "ID": "Independent",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+        }
+    ]
+};
 
 
-function showHeaderTable() {
 
-    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
-    var fullName = document.createElement("th");
-    fullName.append("Full Name");
-    var party = document.createElement("th");
-    party.append("Party");
-    var state = document.createElement("th");
-    state.append("State");
-    var seniority = document.createElement("th");
-    seniority.append("Seniority");
-    var votes = document.createElement("th");
-    votes.append("% of votes");
-    myTHeader.append(fullName, party, state, seniority, votes);
-    //myTHeader.setAttribute("style", "text-align: 'center';");
-    document.getElementById("senate-data").append(myTHeader);
 
-    return;
+
+
+function calculateStatistics(value) {
+    var memberParty = [];
+    var avgParty = 0;
+    var arrayVotesParty = [];
+
+    for (var i = 0; i < allMembers.length; i++) {
+
+        if (allMembers[i].party == value) {
+            memberParty.push(allMembers[i]);
+        }
+    }
+
+    for (var i = 0; i < memberParty.length; i++) {
+        avgParty += memberParty[i].votes_with_party_pct;
+
+
+
+
+        for (var j = 0; j < statistics.Party.length; j++) {
+            if (statistics.Party[j].party == value) {
+                statistics.Party[j].Number = memberParty.length;
+                statistics.Party[j]["List members"] = memberParty;
+                statistics.Party[j]["Average vote with Party"] = avgParty / memberParty.length;
+            }
+        }
+
+
+    }
+
+
+    // for calculate least & most engaged
+
+    allMembers.forEach(function (element) {
+        arrayVotesParty.push(element.votes_with_party_pct);
+    });
+    var sortList = arrayVotesParty.sort();
+
+    var badMemberList = [];
+    var goodMemberList = [];
+
+    var indexMin = sortList[Math.floor((allMembers.length / 10) + 1)]; //index for least engaged
+    var indexMax = sortList[allMembers.length - (Math.floor((allMembers.length / 10) + 1))]; //index for most engaged
+
+
+    //least loyal
+    badMemberList = allMembers.filter(function (element) {
+        return element.votes_with_party_pct <= indexMin;
+    });
+
+    //best loyal
+    goodMemberList = allMembers.filter(function (element) {
+        return element.votes_with_party_pct >= indexMax;
+    });
+
+
+
+    statistics["Least Loyal"] = badMemberList.sort(function (a, b) {
+        return a["votes_with_party_pct"] - b["votes_with_party_pct"]
+    });
+    statistics["Most Loyal"] = goodMemberList.sort(function (a, b) {
+        return a["votes_with_party_pct"] - b["votes_with_party_pct"]
+    });
+    statistics["Most Loyal"].reverse();
+
 }
 
 
 
-
-function showAllMembers(value) {
-    document.getElementById("senate-data").innerHTML = "";
-
-    if (value == "") {
-        var noFoundTr = document.createElement("tr");
-        var noFoundTdLeft = document.createElement("td");
-        noFoundTdLeft.classList.add("col-sm-4");
-        var noFoundTdMiddle = document.createElement("td");
-        noFoundTdMiddle.append("NO MATCHES FOUND");
-        noFoundTdMiddle.classList.add("col-sm-4");
-        noFoundTdMiddle.style.color = "red";
-        var noFoundTdRigth = document.createElement("td");
-        noFoundTdRigth.classList.add("col-sm-4");
-        noFoundTr.append(noFoundTdLeft, noFoundTdMiddle, noFoundTdRigth);
-        document.getElementById("senate-data").append(noFoundTr);
-        return;
-    }
+var party = ["D", "R", "I"];
 
 
-    showHeaderTable();
+for (var i = 0; i < party.length; i++) {
+    calculateStatistics(party[i]);
+}
+
+console.log(statistics);
+
+
+function showTableAtaGlance(value) {
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var party = document.createElement("th");
+    party.append("Party");
+    var numberReps = document.createElement("th");
+    numberReps.append("Number of Reps");
+    var votes = document.createElement("th");
+    votes.append("% voted with Party");
+    myTHeader.append(party, numberReps, votes);
+    document.getElementById("tableAtGlance").append(myTHeader)
     var myTBody = document.createElement("tbody");
 
-    var myTable = value.map(function (tr) {
-        if (tr.middle_name == null) {
-            tr.middle_name = "";
+
+    value.forEach(function (el) {
+
+        var trparty = document.createElement("tr");
+        var tdparty = document.createElement("td");
+        tdparty.append(el.ID);
+        var tdReps = document.createElement("td");
+        tdReps.append(el.Number);
+        var tdVotes = document.createElement("td");
+        tdVotes.append(el["Average vote with Party"]);
+        trparty.append(tdparty, tdReps, tdVotes);
+        myTBody.append(trparty);
+    });
+    document.getElementById("tableAtGlance").append(myTBody);
+    return;
+}
+
+
+function showTableLoyal(value, table) {
+
+    //show header
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var party = document.createElement("th");
+    party.append("Name");
+    var numberReps = document.createElement("th");
+    numberReps.append("Total Votes");
+    var votes = document.createElement("th");
+    votes.append("% votes with Party");
+    myTHeader.append(party, numberReps, votes);
+    document.getElementById(table).append(myTHeader)
+    //show body
+    var myTBody = document.createElement("tbody");
+
+    value.forEach(function (el) {
+        console.log(el);
+        if (el.middle_name == null) {
+            el.middle_name = "";
         }
         var myTr = document.createElement("tr");
         var tdFullName = document.createElement("td");
         var linkName = document.createElement("a");
-        linkName.setAttribute("href", tr.url);
-        linkName.append(tr.last_name + "," + tr.middle_name + tr.first_name);
+        linkName.setAttribute("href", el.url);
+        linkName.append(el.last_name + "," + el.middle_name + el.first_name);
         tdFullName.append(linkName);
-        var tdParty = document.createElement("td");
-        tdParty.append(tr.party);
-        var tdState = document.createElement("td");
-        tdState.append(tr.state);
-        var tdSeniority = document.createElement("td");
-        tdSeniority.append(tr.seniority);
-        var tdVotes = document.createElement("td");
-        tdVotes.append(tr.votes_with_party_pct + "%");
-        myTr.setAttribute("style", "text-align:'center';");
-        myTr.append(tdFullName, tdParty, tdState, tdSeniority, tdVotes);
+        var tdTotalVotes = document.createElement("td");
+        tdTotalVotes.append(el.total_votes);
+        var tdWithParty = document.createElement("td");
+        tdWithParty.append(el.votes_with_party_pct);
+        myTr.append(tdFullName, tdTotalVotes, tdWithParty);
         myTBody.append(myTr);
-        document.getElementById("senate-data").append(myTBody);
+        document.getElementById(table).append(myTBody);
     });
 
 }
 
 
-// function uncheck(value) {
-//     document.getElementById("byState").value = "";
-//     if (value == "checkR") {
-//         document.getElementById("checkD").checked = false;
-//         document.getElementById("checkI").checked = false;
-//         return;
-//     }
-//     if (value == "checkD") {
-//         document.getElementById("checkR").checked = false;
-//         document.getElementById("checkI").checked = false;
-//         return
-//     }
-//     if (value == "checkI") {
-//         document.getElementById("checkR").checked = false;
-//         document.getElementById("checkD").checked = false;
-//         return;
-//     }
+function showTableEngaged(value, table) {
 
-// }
+    //show header
+    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
+    var party = document.createElement("th");
+    party.append("Name");
+    var numberReps = document.createElement("th");
+    numberReps.append("Total Votes");
+    var votes = document.createElement("th");
+    votes.append("% votes with Party");
+    myTHeader.append(party, numberReps, votes);
+    document.getElementById(table).append(myTHeader)
+    //show body
+    var myTBody = document.createElement("tbody");
 
-function filterTableByParty(value) {
-    // console.log(value);
-
-    //code to filter members by party--result in array memberParty
-    var memberParty = [];
-
-    for (var j = 0; j < checkboxesChecked.length; j++) {
-        for (var i = 0; i < allMembers.length; i++) { //loop for make the required HTML table 
-            if (allMembers[i].party == value[j]) {
-                memberParty.push(allMembers[i]);
-            }
+    value.forEach(function (el) {
+        console.log(el);
+        if (el.middle_name == null) {
+            el.middle_name = "";
         }
-    }
-
-    //use a globar variable to pass this value to others functions --multi-filters
-    filterMemberParty = memberParty;
-
-    //print result if just filterParty 
-    if (filterByState == false) {
-        showAllMembers(memberParty);
-        return;
-    }
-    //call for another filter (by State)
-    filterTableByState(memberParty, filterMemberState);
-    return;
-
-}
-
-
-
-
-function filterTableByState(array, value) {
-
-    var memberState = [];
-    for (var i = 0; i < array.length; i++) { //loop for make the required HTML table 
-        if (array[i].state == value) {
-            memberState.push(array[i]);
-        }
-    }
-    showAllMembers(memberState);
-    return;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-// CALLS //////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-
-
-showAllMembers(allMembers);
-
-
-//code filter by party -- checkboxes
-
-var allCheckboxes = document.querySelectorAll('input[type=checkbox]'); //for addAddEventListeners to checkboxs
-//console.log(allCheckboxes);
-var checkboxesChecked = [];
-
-for (var i = 0; i < allCheckboxes.length; i++) {
-    allCheckboxes[i].addEventListener('change', function () {
-        filterByParty = true;
-
-        if (this.checked == false) { //if any of the checkbox is checked---unselect--show all of members
-
-
-            //eliminate checkbox unchecked 
-            var index = checkboxesChecked.indexOf(this.value);
-            checkboxesChecked.splice(index, 1);
-
-            //if NO filterParty && no filterState show all members & break 
-            if (filterByState == false) {
-
-                if (checkboxesChecked.length == 0) {
-
-                    filterByParty = false;
-                    showAllMembers(allMembers);
-                    return;
-                }
-
-
-                //call for YES filterParty && NO filterState
-                filterTableByParty(checkboxesChecked);
-
-                return;
-            }
-
-            //if filterState active && NO filterParty
-
-            if (checkboxesChecked.length == 0) {
-                filterByParty = false;
-                console.log("aqui");
-                filterTableByState(allMembers, filterMemberState);
-                return;
-            }
-
-
-
-            //if YES filterParty && YES  filterState
-            filterTableByParty(checkboxesChecked);
-            return;
-
-        }
-        //ADD value to array filters && call filterParty
-        checkboxesChecked.push(this.value);
-        filterTableByParty(checkboxesChecked);
-        return;
+        var myTr = document.createElement("tr");
+        var tdFullName = document.createElement("td");
+        var linkName = document.createElement("a");
+        linkName.setAttribute("href", el.url);
+        linkName.append(el.last_name + "," + el.middle_name + el.first_name);
+        tdFullName.append(linkName);
+        var tdTotalVotes = document.createElement("td");
+        tdTotalVotes.append(el.total_votes);
+        var tdWithParty = document.createElement("td");
+        tdWithParty.append(el.votes_with_party_pct);
+        myTr.append(tdFullName, tdTotalVotes, tdWithParty);
+        myTBody.append(myTr);
+        document.getElementById(table).append(myTBody);
     });
+
 }
 
-//code filter by state -- select
+var party = ["D", "R", "I"];
 
-document.getElementById("byState").addEventListener('change', function () {
-    console.log(filterByParty);
-    //global variable for use this value in others functions
-    filterMemberState = this.value;
 
-    //says that we are filtering by State
-    filterByState = true;
+for (var i = 0; i < party.length; i++) {
+    calculateStatistics(party[i]);
+}
 
-    //DESELECT FILTER BY STATE
-    if (this.value == "") { //if we select nothing show all members is there isn't another filter, else show result of filterParty
-        filterByState = false;
-        if (filterByParty == false) {
-            showAllMembers(allMembers);
-            return;
-        }
-        //call function with parameter equal to a global variable that contains the members filtered by party to show result
-        showAllMembers(filterMemberParty);
-        return;
-    }
-
-    //if NO filterParty
-    if (filterByParty == false) {
-        filterTableByState(allMembers, this.value);
-        return;
-    }
-    //if YES filterParty
-    filterTableByState(filterMemberParty, this.value);
-
-    return;
-});
+showTableAtaGlance(statistics.Party);
+showTableLoyal(statistics["Least Loyal"], "leastLoyal");
+showTableLoyal(statistics["Most Loyal"], "bestLoyal");
+// showTableLoyal(statistics["Least Engaged"][0], "leastEngaged");
+// showTableLoyal(statistics["Best Engaged"][0], "bestEngaged");

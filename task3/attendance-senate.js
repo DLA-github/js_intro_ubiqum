@@ -4839,7 +4839,7 @@ var data = {
             }
         ]
     }]
-};
+}
 
 
 
@@ -4847,8 +4847,6 @@ var data = {
 
 
 /////////////////// INIT ///////////////////////////////////////////////////////
-
-
 
 allMembers = data.results[0].members; //simplified acces to data.
 
@@ -4892,7 +4890,7 @@ var statistics = {
 function calculateStatistics(value) {
     var memberParty = [];
     var avgParty = 0;
-    var arrayVotesParty = [];
+    var arrayVotesMissed = [];
 
     for (var i = 0; i < allMembers.length; i++) {
 
@@ -4919,81 +4917,43 @@ function calculateStatistics(value) {
     }
 
 
-    // for calculate least & most engaged/loyal
-    var arrayVotesParty = [];
-    var arrayVotesMissed = []
+    // for calculate least & most Engaged
+
     allMembers.forEach(function (element) {
-        arrayVotesParty.push(element.votes_with_party_pct);
         arrayVotesMissed.push(element.missed_votes_pct);
     });
-    var sortList = arrayVotesParty.sort(function (a, b) {
-        return a - b;
-    });
-    var sortMissedVotesPct = arrayVotesMissed.sort(function (a, b) {
+    var sortList = arrayVotesMissed.sort(function (a, b) {
         return a - b;
     });
 
-    //console.log(sortMissedVotesPct);
+    var badMemberList = [];
+    var goodMemberList = [];
 
-    var badMemberListLoyal = [];
-    var goodMemberListLoyal = [];
-    var badMemberListEngaged = [];
-    var goodMemberListEngaged = [];
-
-
-    var indexMinLoyal = sortList[Math.floor((allMembers.length / 10) + 1)]; //index for least loyal
-    var indexMaxLoyal = sortList[allMembers.length - (Math.floor((allMembers.length / 10) + 1))]; //index for most loyal
-    var indexMinEngaged = sortMissedVotesPct[Math.floor((allMembers.length / 10) + 1)]; //index for least engaged
-    var indexMaxEngaged = sortMissedVotesPct[allMembers.length - (Math.floor((allMembers.length / 10) + 1))]; //index for most engaged
+    var indexMin = sortList[Math.floor((allMembers.length / 10) + 1)]; //index for least engaged
+    var indexMax = sortList[allMembers.length - (Math.floor((allMembers.length / 10) + 1))]; //index for most engaged
 
 
-    //least loyal
-    badMemberListLoyal = (allMembers.filter(function (element) {
-        return element.votes_with_party_pct <= indexMinLoyal;
-    }));
-
-    //most loyal
-    goodMemberListLoyal = (allMembers.filter(function (element) {
-        return element.votes_with_party_pct >= indexMaxLoyal;
-    }));
-
-    //most Engaged
-    goodMemberListEngaged = (allMembers.filter(function (element) {
-        return element.missed_votes_pct <= indexMinEngaged;
-    }));
-
-    //Least Engaged
-    badMemberListEngaged = (allMembers.filter(function (element) {
-        return element.missed_votes_pct >= indexMaxEngaged;
-    }));
-
-
-
-    // statistics["Least Loyal"] = badMemberListLoyal.sort(function (a, b) {
-    //     return a.votes_with_party_pct - b.votes_with_party_pct;
-    // });
-    // statistics["Most Loyal"] = goodMemberListLoyal.sort(function (a, b) {
-    //     return a.votes_with_party_pct - b.votes_with_party_pct;
-    // });
-
-    statistics["Least Engaged"] = badMemberListEngaged.sort(function (a, b) {
-        return a["missed_votes_pct"] - b["missed_votes_pct"];
-    });
-    statistics["Most Engaged"] = goodMemberListEngaged.sort(function (a, b) {
-        return a["missed_votes_pct"] - b["missed_votes_pct"];
+    //least Engaged
+    badMemberList = allMembers.filter(function (element) {
+        return element.missed_votes_pct <= indexMin;
     });
 
+    //best Engaged
+    goodMemberList = allMembers.filter(function (element) {
+        return element.missed_votes_pct >= indexMax;
+    });
+
+
+
+    statistics["Most Engaged"] = badMemberList.sort(function (a, b) {
+        return a["missed_votes_pct"] - b["missed_votes_pct"];
+    });
+    statistics["Least Engaged"] = goodMemberList.sort(function (a, b) {
+        return a["missed_votes_pct"] - b["missed_votes_pct"];
+    });
     statistics["Least Engaged"].reverse();
+
 }
-
-var party = ["D", "R", "I"];
-
-
-for (var i = 0; i < party.length; i++) {
-    calculateStatistics(party[i]);
-}
-
-//console.log(statistics);
 
 
 function showTableAtaGlance(value) {
@@ -5065,22 +5025,22 @@ function showTableAtaGlance(value) {
 
 
 function showTableEngaged(value, table) {
-    //console.log(table);
+
     //show header
     var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
     var party = document.createElement("th");
     party.append("Name");
     var numberReps = document.createElement("th");
-    numberReps.append("Num. Missed Votes");
+    numberReps.append("Number Votes Missed");
     var votes = document.createElement("th");
-    votes.append("% votes Missed");
+    votes.append("% Votes Missed");
     myTHeader.append(party, numberReps, votes);
     document.getElementById(table).append(myTHeader)
     //show body
     var myTBody = document.createElement("tbody");
 
     value.forEach(function (el) {
-        //console.log(el);
+        console.log(el);
         if (el.middle_name == null) {
             el.middle_name = "";
         }
@@ -5090,11 +5050,11 @@ function showTableEngaged(value, table) {
         linkName.setAttribute("href", el.url);
         linkName.append(el.last_name + "," + el.middle_name + el.first_name);
         tdFullName.append(linkName);
-        var tdTotalVotes = document.createElement("td");
-        tdTotalVotes.append(el.missed_votes);
-        var tdWithParty = document.createElement("td");
-        tdWithParty.append(el.missed_votes_pct);
-        myTr.append(tdFullName, tdTotalVotes, tdWithParty);
+        var tdMissedVotes = document.createElement("td");
+        tdMissedVotes.append(el.missed_votes);
+        var tdPerMissedVotes = document.createElement("td");
+        tdPerMissedVotes.append(el.missed_votes_pct);
+        myTr.append(tdFullName, tdMissedVotes, tdPerMissedVotes);
         myTBody.append(myTr);
         document.getElementById(table).append(myTBody);
     });
@@ -5110,6 +5070,6 @@ for (var i = 0; i < party.length; i++) {
 
 showTableAtaGlance(statistics.Party);
 // showTableLoyal(statistics["Least Loyal"], "leastLoyal");
-// showTableLoyal(statistics["Best Loyal"], "bestLoyal");
+// showTableLoyal(statistics["Most Loyal"], "bestLoyal");
 showTableEngaged(statistics["Least Engaged"], "leastEngaged");
 showTableEngaged(statistics["Most Engaged"], "mostEngaged");

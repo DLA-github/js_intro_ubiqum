@@ -4850,166 +4850,101 @@ var data = {
 
 allMembers = data.results[0].members; //simplified acces to data.
 
-var filterByState = false;
-var filterByParty = false;
-var filterMemberState;
 
-////////////////////////////////////////////////////////////////////////////////
-// FUNCTIONS ///////////////////////////////////////////////////////////////////
+//calculate numbers of members for each party
 
-
-function showHeaderTable() {
-
-    var myTHeader = document.createElement("tr"); //.setAttribute("style", "text-align:'center';");
-    var fullName = document.createElement("th");
-    fullName.append("Full Name");
-    var party = document.createElement("th");
-    party.append("Party");
-    var state = document.createElement("th");
-    state.append("State");
-    var seniority = document.createElement("th");
-    seniority.append("Seniority");
-    var votes = document.createElement("th");
-    votes.append("% of votes");
-    myTHeader.append(fullName, party, state, seniority, votes);
-    //myTHeader.setAttribute("style", "text-align: 'center';");
-    document.getElementById("senate-data").append(myTHeader);
-
-    return;
-}
-
-
-
-
-function showAllMembers(value) {
-    document.getElementById("senate-data").innerHTML = "";
-
-    if (value == "") {
-        var noFoundTr = document.createElement("tr");
-        var noFoundTdLeft = document.createElement("td");
-        noFoundTdLeft.classList.add("col-sm-4");
-        var noFoundTdMiddle = document.createElement("td");
-        noFoundTdMiddle.append("NO MATCHES FOUND");
-        noFoundTdMiddle.classList.add("col-sm-4");
-        noFoundTdMiddle.style.color = "red";
-        var noFoundTdRigth = document.createElement("td");
-        noFoundTdRigth.classList.add("col-sm-4");
-        noFoundTr.append(noFoundTdLeft, noFoundTdMiddle, noFoundTdRigth);
-        document.getElementById("senate-data").append(noFoundTr);
-        return;
-    }
-
-
-    showHeaderTable();
-    var myTBody = document.createElement("tbody");
-
-    var myTable = value.map(function (tr) {
-        if (tr.middle_name == null) {
-            tr.middle_name = "";
+var statistics = {
+    "Lest Engaged": [],
+    "Party": [{
+            "party": "D",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+            "Vote with Party": 0,
+            "No Vote With Party": 0,
+            "Missed Votes": 0,
+            "No Missed Votes": 0
+        },
+        {
+            "party": "R",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+            "Vote with Party": 0,
+            "No Vote With Party": 0,
+            "Missed Votes": 0,
+            "No Missed Votes": 0
+        },
+        {
+            "party": "I",
+            "Number": 0,
+            "List members": [],
+            "Average vote with Party": 0,
+            "Vote with Party": 0,
+            "No Vote With Party": 0,
+            "Missed Votes": 0,
+            "No Missed Votes": 00
         }
-        var myTr = document.createElement("tr");
-        var tdFullName = document.createElement("td");
-        var linkName = document.createElement("a");
-        linkName.setAttribute("href", tr.url);
-        linkName.append(tr.last_name + "," + tr.middle_name + tr.first_name);
-        tdFullName.append(linkName);
-        var tdParty = document.createElement("td");
-        tdParty.append(tr.party);
-        var tdState = document.createElement("td");
-        tdState.append(tr.state);
-        var tdSeniority = document.createElement("td");
-        tdSeniority.append(tr.seniority);
-        var tdVotes = document.createElement("td");
-        tdVotes.append(tr.votes_with_party_pct + "%");
-        myTr.setAttribute("style", "text-align:'center';");
-        myTr.append(tdFullName, tdParty, tdState, tdSeniority, tdVotes);
-        myTBody.append(myTr);
-        document.getElementById("senate-data").append(myTBody);
-    });
+    ]
+};
 
-}
 
-function doFilterParty(parties) {
-    var result = [];
 
-    parties.forEach(function (party) {
-        result.push(allMembers.filter(function (member) {
-            return member.party == party;
-        }));
-    });
 
-    var filterResult = [].concat.apply([], result);
 
-    return filterResult;
-}
 
-function filterTableByState(members, state) {
-
-    var memberState = [];
-    for (var i = 0; i < members.length; i++) { //loop for make the required HTML table 
-        if (members[i].state == state) {
-            memberState.push(members[i]);
+function calculateStatistics(value) {
+    var memberParty = [];
+    var avgParty = 0;
+    var arrayVotesParty = [];
+    for (var i = 0; i < allMembers.length; i++) {
+        arrayVotesParty.push(allMembers[i].votes_with_party_pct);
+        if (allMembers[i].party == value) {
+            memberParty.push(allMembers[i]);
         }
     }
-    showAllMembers(memberState);
-    return;
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-// CALLS //////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-
-
-showAllMembers(allMembers);
+    for (var i = 0; i < memberParty.length; i++) {
+        avgParty += memberParty[i].votes_with_party_pct;
 
 
 
 
-function getFilterTable() {
+        for (var j = 0; j < statistics.Party.length; j++) {
+            if (statistics.Party[j].party == value) {
+                statistics.Party[j].Number = memberParty.length;
+                statistics.Party[j]["List members"] = memberParty;
+                statistics.Party[j]["Average vote with Party"] = avgParty / memberParty.length;
+            }
+        }
 
-    var checked = [];
-    var allCheckboxes = document.querySelectorAll('input[type=checkbox]:checked'); //for addAddEventListeners to checkboxs
-    allCheckboxes.forEach(function (el) {
-        checked.push(el.attributes.value.nodeValue);
-    });
 
-    if (checked == "") {
-        filterByParty = false;
-        if (filterByState == false) {
-            showAllMembers(allMembers);
-            return;
-        } else {
-            filterTableByState(allMembers, filterMemberState);
-            return;
+    }
+    var sortList = arrayVotesParty.sort();
+    var badMemberList = [];
+    var index = arrayVotesParty[Math.floor((allMembers.length / 10) + 1)];
+    for (var i = 0; i < allMembers.length; i++) {
+        if (allMembers[i].votes_with_party_pct <= index) {
+            badMemberList.push(allMembers[i]);
         }
     }
-    filterByParty = true;
-    var filterMemberParty = doFilterParty(checked);
+    statistics["Lest Engaged"] = badMemberList;
 
-    if (filterByState == false) {
-        showAllMembers(filterMemberParty);
-        return;
-    }
 
-    filterTableByState(filterMemberParty, filterMemberState);
-    return;
+
+
+
+
 
 }
 
-document.getElementById("byParty").addEventListener('click', function () {
-    getFilterTable();
-});
-document.getElementById("byState").addEventListener('change', function () {
 
-    filterMemberState = this.value;
 
-    if (filterMemberState != "") {
-        filterByState = true;
-    } else {
-        filterByState = false;
-    }
+var party = ["D", "R", "I"];
 
-    getFilterTable();
 
-});
+for (var i = 0; i < party.length; i++) {
+    calculateStatistics(party[i]);
+}
+
+console.log(statistics);

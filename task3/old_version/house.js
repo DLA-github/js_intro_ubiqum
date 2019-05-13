@@ -20796,26 +20796,63 @@ function showAllMembers(value) {
 }
 
 
-function doFilterParty(parties) {
-    var result = [];
+// function uncheck(value) {
+//     document.getElementById("byState").value = "";
+//     if (value == "checkR") {
+//         document.getElementById("checkD").checked = false;
+//         document.getElementById("checkI").checked = false;
+//         return;
+//     }
+//     if (value == "checkD") {
+//         document.getElementById("checkR").checked = false;
+//         document.getElementById("checkI").checked = false;
+//         return
+//     }
+//     if (value == "checkI") {
+//         document.getElementById("checkR").checked = false;
+//         document.getElementById("checkD").checked = false;
+//         return;
+//     }
 
-    parties.forEach(function (party) {
-        result.push(allMembers.filter(function (member) {
-            return member.party == party;
-        }));
-    });
+// }
 
-    var filterResult = [].concat.apply([], result);
+function filterTableByParty(value) {
+    // console.log(value);
 
-    return filterResult;
+    //code to filter members by party--result in array memberParty
+    var memberParty = [];
+
+    for (var j = 0; j < checkboxesChecked.length; j++) {
+        for (var i = 0; i < allMembers.length; i++) { //loop for make the required HTML table 
+            if (allMembers[i].party == value[j]) {
+                memberParty.push(allMembers[i]);
+            }
+        }
+    }
+
+    //use a globar variable to pass this value to others functions --multi-filters
+    filterMemberParty = memberParty;
+
+    //print result if just filterParty 
+    if (filterByState == false) {
+        showAllMembers(memberParty);
+        return;
+    }
+    //call for another filter (by State)
+    filterTableByState(memberParty, filterMemberState);
+    return;
+
 }
 
-function filterTableByState(members, state) {
+
+
+
+function filterTableByState(array, value) {
 
     var memberState = [];
-    for (var i = 0; i < members.length; i++) { //loop for make the required HTML table 
-        if (members[i].state == state) {
-            memberState.push(members[i]);
+    for (var i = 0; i < array.length; i++) { //loop for make the required HTML table 
+        if (array[i].state == value) {
+            memberState.push(array[i]);
         }
     }
     showAllMembers(memberState);
@@ -20831,52 +20868,92 @@ function filterTableByState(members, state) {
 showAllMembers(allMembers);
 
 
+//code filter by party -- checkboxes
+
+var allCheckboxes = document.querySelectorAll('input[type=checkbox]'); //for addAddEventListeners to checkboxs
+//console.log(allCheckboxes);
+var checkboxesChecked = [];
+
+for (var i = 0; i < allCheckboxes.length; i++) {
+    allCheckboxes[i].addEventListener('change', function () {
+        filterByParty = true;
+
+        if (this.checked == false) { //if any of the checkbox is checked---unselect--show all of members
 
 
-function getFilterTable() {
+            //eliminate checkbox unchecked 
+            var index = checkboxesChecked.indexOf(this.value);
+            checkboxesChecked.splice(index, 1);
 
-    var checked = [];
-    var allCheckboxes = document.querySelectorAll('input[type=checkbox]:checked'); //for addAddEventListeners to checkboxs
-    allCheckboxes.forEach(function (el) {
-        checked.push(el.attributes.value.nodeValue);
+            //if NO filterParty && no filterState show all members & break 
+            if (filterByState == false) {
+
+                if (checkboxesChecked.length == 0) {
+
+                    filterByParty = false;
+                    showAllMembers(allMembers);
+                    return;
+                }
+
+
+                //call for YES filterParty && NO filterState
+                filterTableByParty(checkboxesChecked);
+
+                return;
+            }
+
+            //if filterState active && NO filterParty
+
+            if (checkboxesChecked.length == 0) {
+                filterByParty = false;
+                console.log("aqui");
+                filterTableByState(allMembers, filterMemberState);
+                return;
+            }
+
+
+
+            //if YES filterParty && YES  filterState
+            filterTableByParty(checkboxesChecked);
+            return;
+
+        }
+        //ADD value to array filters && call filterParty
+        checkboxesChecked.push(this.value);
+        filterTableByParty(checkboxesChecked);
+        return;
     });
+}
 
-    if (checked == "") {
-        filterByParty = false;
-        if (filterByState == false) {
+//code filter by state -- select
+
+document.getElementById("byState").addEventListener('change', function () {
+    console.log(filterByParty);
+    //global variable for use this value in others functions
+    filterMemberState = this.value;
+
+    //says that we are filtering by State
+    filterByState = true;
+
+    //DESELECT FILTER BY STATE
+    if (this.value == "") { //if we select nothing show all members is there isn't another filter, else show result of filterParty
+        filterByState = false;
+        if (filterByParty == false) {
             showAllMembers(allMembers);
             return;
-        } else {
-            filterTableByState(allMembers, filterMemberState);
-            return;
         }
-    }
-    filterByParty = true;
-    var filterMemberParty = doFilterParty(checked);
-
-    if (filterByState == false) {
+        //call function with parameter equal to a global variable that contains the members filtered by party to show result
         showAllMembers(filterMemberParty);
         return;
     }
 
-    filterTableByState(filterMemberParty, filterMemberState);
-    return;
-
-}
-
-document.getElementById("byParty").addEventListener('click', function () {
-    getFilterTable();
-});
-document.getElementById("byState").addEventListener('change', function () {
-
-    filterMemberState = this.value;
-
-    if (filterMemberState != "") {
-        filterByState = true;
-    } else {
-        filterByState = false;
+    //if NO filterParty
+    if (filterByParty == false) {
+        filterTableByState(allMembers, this.value);
+        return;
     }
+    //if YES filterParty
+    filterTableByState(filterMemberParty, this.value);
 
-    getFilterTable();
-
+    return;
 });

@@ -9,7 +9,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
-    <title>Senate Chamber</title>
+    <title>House Loyalty Party</title>
 </head>
 
 <body class="container">
@@ -39,6 +39,13 @@
 
                 </li>
                 <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Attendance</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="senate_attendance_page.html">Senate</a></li>
+                        <li><a href="house_attendance_page.html">House</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Loyalty</a>
                     <ul class="dropdown-menu">
                         <li><a href="senate_loyalty_page.html">Senate</a></li>
@@ -46,13 +53,7 @@
                     </ul>
 
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Attendance</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="senate_attendance_page.html">Senate</a></li>
-                        <li><a href="house_attendance_page.html">House</a></li>
-                    </ul>
-                </li>
+
             </ul>
         </div>
 
@@ -65,22 +66,33 @@
     </header>
     <!--Table container-->
     <div>
-        <h2>Attendance</h2>
-        <p>The Constitution specifies that a majority of members constitutes a quorum to do business in each house.
-            Representatives and senators rarely force the presence of a quorum by demanding quorum calls; thus, in most
-            cases, debates continue even if a majority is not present.</p>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Attendance</h2>
+                <p>The Constitution specifies that a majority of members constitutes a quorum to do business in each
+                    house.
+                    Representatives and senators rarely force the presence of a quorum by demanding quorum calls; thus,
+                    in
+                    most
+                    cases, debates continue even if a majority is not present.</p>
 
-        <p>The Senate uses roll-call votes; a clerk calls out the names of all the senators, each senator stating "aye"
-            or "no" when his or her name is announced. The House reserves roll-call votes for the most formal matters,
-            as a roll-call of all 435 representatives takes quite some time; normally, members vote by electronic
-            device. In the case of a tie, the motion in question fails. In the Senate, the Vice President may (if
-            present) cast the tiebreaking vote.</p>
-
-        <h2>House at a glance</h2>
-        <table class="table table-responsive table-hover table-sm" id="tableAtGlance">
-
-        </table>
-
+                <p>The Senate uses roll-call votes; a clerk calls out the names of all the senators, each senator
+                    stating
+                    "aye"
+                    or "no" when his or her name is announced. The House reserves roll-call votes for the most formal
+                    matters,
+                    as a roll-call of all 435 representatives takes quite some time; normally, members vote by
+                    electronic
+                    device. In the case of a tie, the motion in question fails. In the Senate, the Vice President may
+                    (if
+                    present) cast the tiebreaking vote.</p>
+            </div>
+            <div class="col-sm-6">
+                <h2>House at a glance</h2>
+                <table class="table table-responsive table-hover table-sm" id="tableAtGlance">
+                </table>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <h2>Least Loyal(Bottom 10% Attendance)</h2>

@@ -6,10 +6,25 @@ var filterByState = false;
 var filterByParty = false;
 var filterMemberParty = [];
 var filterMemberState;
+var AllStates = [];
+var filteredStates = [];
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS ///////////////////////////////////////////////////////////////////
 
+
+allMembers.forEach(function (member) {
+    AllStates.push(member.state);
+
+});
+
+//return the value only if the pos of the current element is equal to the pos in the container array (only can be once).
+filteredStates = AllStates.filter(function (el, pos) {
+    return AllStates.indexOf(el) == pos;
+});
+filteredStates.sort();
 
 function showHeaderTable() {
 
@@ -35,7 +50,6 @@ function showHeaderTable() {
 
 function showAllMembers(value) {
     document.getElementById("house-data").innerHTML = "";
-    console.log(value);
 
     if (value == "") {
         var noFoundTr = document.createElement("tr");
@@ -63,7 +77,7 @@ function showAllMembers(value) {
         var tdFullName = document.createElement("td");
         var linkName = document.createElement("a");
         linkName.setAttribute("href", tr.url);
-        linkName.append(tr.last_name + "," + tr.middle_name + tr.first_name);
+        linkName.append(tr.last_name + ", " + tr.middle_name + tr.first_name);
         tdFullName.append(linkName);
         var tdParty = document.createElement("td");
         tdParty.append(tr.party);
@@ -116,7 +130,7 @@ function filterTableByState(members, state) {
 
 showAllMembers(allMembers);
 
-
+createDropDown(filteredStates);
 
 
 function getFilterTable() {
@@ -166,3 +180,22 @@ document.getElementById("byState").addEventListener('change', function () {
     getFilterTable();
 
 });
+
+
+
+//DROPDOWN CODE
+
+
+function createDropDown(array) {
+    var defaultOption = document.createElement("option");
+    defaultOption.innerText = "All States";
+    defaultOption.setAttribute("value", "");
+    document.getElementById("byState").append(defaultOption);
+    array.forEach(function (arr) {
+        var sel = document.createElement("option");
+        sel.setAttribute("value", arr);
+        sel.innerHTML = arr;
+        document.getElementById("byState").append(sel);
+    })
+
+}

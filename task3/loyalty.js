@@ -138,7 +138,7 @@ function showTableAtaGlance(value) {
             var tdReps = document.createElement("td");
             tdReps.append(el.Number);
             var tdVotes = document.createElement("td");
-            tdVotes.append(el["Average vote with Party"]);
+            tdVotes.append(el["Average vote with Party"].toFixed(3));
             trparty.append(tdparty, tdReps, tdVotes);
             myTBody.append(trparty);
         }
@@ -164,7 +164,6 @@ function showTableLoyal(value, table) {
     var myTBody = document.createElement("tbody");
 
     value.forEach(function (el) {
-        console.log(el);
         if (el.middle_name == null) {
             el.middle_name = "";
         }
@@ -172,7 +171,7 @@ function showTableLoyal(value, table) {
         var tdFullName = document.createElement("td");
         var linkName = document.createElement("a");
         linkName.setAttribute("href", el.url);
-        linkName.append(el.last_name + "," + el.middle_name + el.first_name);
+        linkName.append(el.last_name + ", " + el.middle_name + el.first_name);
         tdFullName.append(linkName);
         var tdTotalVotes = document.createElement("td");
         tdTotalVotes.append(el.total_votes);

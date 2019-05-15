@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
 
@@ -31,7 +32,7 @@
         <div class="container-fluid">
             <ul class="nav navbar-nav">
                 <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Congress 113</a>
                     <ul class="dropdown-menu">
                         <li><a href="senate.html">Senate</a></li>
@@ -59,11 +60,16 @@
             </ul>
         </div>
 
+
     </nav>
 
 
 
     <!--Table container-->
+    <table class="container">
+
+    </table>
+
 
     <div class="container">
         <h2>Senators</h2>
@@ -101,14 +107,32 @@
         </form>
 
         <div class="divTable container">
-            <table class="table table-responsive table-hover table-sm" id="senate-data"></table>
+            <table class="table table-responsive table-hover table-sm">
+                <thead>
+                    <th>Name</th>
+                    <td>Party</th>
+                    <th>State</th>
+                    <th>Seniority</th>
+                    <th>% Votes With Party</th>
+                </thead>
+
+                <tbody id="senate-data">
+                    <tr v-for="member in members">
+                        <td> <a href={{member.url}}>{{member.first_name}} , {{member.last_name}}</a></td>
+                        <td> {{member.party}} </td>
+                        <td> {{member.state}} </td>
+                        <td> {{member.seniority}} </td>
+                        <td> {{member.votes_with_party_pct}} </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <footer class="navbar navbar-default">
         <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="pro-congress-113-senate.js"></script>
+    <!-- <script src="pro-congress-113-senate.js"></script> -->
     <script src="senate.js"></script>
 
 </body>

@@ -9,8 +9,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
-
-    <title>Senate Chamber</title>
+    <title>Senate Loyalty Party</title>
 </head>
 
 <body class="container">
@@ -45,9 +44,8 @@
                         <li><a href="senate_attendance_page.html">Senate</a></li>
                         <li><a href="house_attendance_page.html">House</a></li>
                     </ul>
-
                 </li>
-                <li class="dropdown">
+                <li class="dropdown active">
                     <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Loyalty</a>
                     <ul class="dropdown-menu">
                         <li><a href="senate_loyalty_page.html">Senate</a></li>
@@ -62,56 +60,46 @@
     </nav>
 
 
-
+    <header>
+        <div>
+        </div>
+    </header>
     <!--Table container-->
-
-    <div class="container">
-        <h2>Senators</h2>
-        <p>First convened in 1789, the composition and powers of the Senate are established in Article
-            One of the U.S.
-            Constitution. Each state is represented by two senators, regardless of population, who serve
-            staggered
-            six-year terms. The Senate has several exclusive powers not granted to the House, including
-            consenting to
-            treaties as a precondition to their ratification and consenting to or confirming
-            appointments of Cabinet
-            secretaries, federal judges, other federal executive officials, military officers,
-            regulatory officials,
-            ambassadors, and other federal uniformed officers, as well as trial of federal officials
-            impeached by the
-            House.</p>
-
-
-        <form class="container " name="filter" id="filterForm" action="" method="">
-            <div class="col-sm-6" id="byParty">
-                <div class="col-sm-3"><input type="checkbox" value="R" name="checkR" id="checkR"> Republican</input>
-                </div>
-                <div class="col-sm-3"><input type="checkbox" value="D" name="checkD" id="checkD"> Democratic</input>
-                </div>
-                <div class="col-sm-3"><input type="checkbox" value="I" name="checkI" id="checkI">
-                    Independent</input>
-                </div>
+    <div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Party Loyalty</h2>
+                <p>Those who consider themselves to be strong partisans, strong Democrats and strong Republicans
+                    respectively, tend to be the most faithful in voting for their party's nominee for office and
+                    legislation that backs their party's agenda. </p>
             </div>
+            <div class="col-sm-6">
+                <h2>Senate at a glance</h2>
+                <table class="table table-responsive table-hover table-sm" id="tableAtGlance">
 
-            <div class="col-sm-3">
-                <select name="showByState" id="byState">
-
-                </select>
+                </table>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Least Loyal (Bottom 10% of Party)</h2>
+                <table class="table table-responsive table-hover table-sm" id="leastLoyal">
 
-        <div class="divTable container">
-            <table class="table table-responsive table-hover table-sm" id="senate-data"></table>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <h2>Most Loyal (Top 10% of Party)</h2>
+                <table class="table table-responsive table-hover table-sm" id="mostLoyal">
+
+                </table>
+            </div>
         </div>
     </div>
     <footer class="navbar navbar-default">
         <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="pro-congress-113-senate.js"></script>
-    <script src="senate.js"></script>
-
+    <!-- <script src="pro-congress-113-senate.js"></script> -->
+    <script src="loyalty_senate.js"></script>
 </body>
-
 
 </html>

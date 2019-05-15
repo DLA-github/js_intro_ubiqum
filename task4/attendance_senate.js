@@ -1,9 +1,10 @@
 /////////////////// INIT ///////////////////////////////////////////////////////
 
-allMembers = data.results[0].members; //simplified acces to data.
+var data;
+var allMembers;
+var party = ["D", "R", "I"];
+const url = 'https://api.propublica.org/congress/v1/113/senate/members.json'
 
-
-//calculate numbers of members for each party
 
 var statistics = {
     "Least Engaged": [],
@@ -39,18 +40,34 @@ var statistics = {
 };
 
 
-var party = ["D", "R", "I"];
+
+fetch(url, {
+
+    method: "GET",
+    headers: {
+        'X-API-Key': 'FR2OceQlsd8zFSiKVyScEYQ2RuBgMz99VFL4n2os'
+    }
+}).then(function (response) {
+    if (response.ok) {
+        return response.json();
+    }
+}).then(function (json) {
+    data = json;
+    allMembers = data.results[0].members;
+    calculateStatistics(party);
+
+    showTableAtaGlance(statistics.Party);
+    showTableEngaged(statistics["Least Engaged"], "leastEngaged");
+    showTableEngaged(statistics["Most Engaged"], "mostEngaged");
+
+}).catch(function (error) {
+    console.log(error);
+});
 
 
 
-calculateStatistics(party);
-
-showTableAtaGlance(statistics.Party);
-showTableEngaged(statistics["Least Engaged"], "leastEngaged");
-showTableEngaged(statistics["Most Engaged"], "mostEngaged");
-
-
-
+//////////////////////////////////////////////////
+///////////////////////////////FUNCTIONS///////////////////////////////////////
 function calculateStatistics(value) {
     var memberParty = [];
     var arrayVotesMissed = [];
@@ -171,9 +188,6 @@ function showTableAtaGlance(value) {
     myTBody.append(trTotal);
 
     document.getElementById("tableAtGlance").append(myTBody);
-
-
-
 
     return;
 }

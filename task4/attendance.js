@@ -1,7 +1,28 @@
 /////////////////// INIT ///////////////////////////////////////////////////////
 
-allMembers = data.results[0].members; //simplified acces to data.
+//allMembers = data.results[0].members; //simplified acces to data.
+var data;
 
+const url = 'https://api.propublica.org/congress/v1/113/senate/members.json'
+
+fetch(url, {
+
+    method: "GET",
+    headers: {
+        'X-API-Key': 'FR2OceQlsd8zFSiKVyScEYQ2RuBgMz99VFL4n2os'
+    }
+}).then(function (response) {
+    if (response.ok) {
+        return response.json();
+    }
+}).then(function (json) {
+    data = json;
+    console.log(data);
+}).catch(function (error) {
+    console.log(error);
+});
+
+allMembers = data.results[0].members;
 
 //calculate numbers of members for each party
 

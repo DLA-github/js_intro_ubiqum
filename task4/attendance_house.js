@@ -1,9 +1,11 @@
 /////////////////// INIT ///////////////////////////////////////////////////////
 
-allMembers = data.results[0].members; //simplified acces to data.
 
+var data;
+var allMembers;
+var party = ["D", "R", "I"];
+const url = 'https://api.propublica.org/congress/v1/113/house/members.json'
 
-//calculate numbers of members for each party
 
 var statistics = {
     "Least Engaged": [],
@@ -39,17 +41,31 @@ var statistics = {
 };
 
 
-var party = ["D", "R", "I"];
 
+fetch(url, {
 
+    method: "GET",
+    headers: {
+        'X-API-Key': 'FR2OceQlsd8zFSiKVyScEYQ2RuBgMz99VFL4n2os'
+    }
+}).then(function (response) {
+    if (response.ok) {
+        return response.json();
+    }
+}).then(function (json) {
+    data = json;
+    allMembers = data.results[0].members;
+    calculateStatistics(party);
+    showTableAtaGlance(statistics.Party);
+    showTableEngaged(statistics["Least Engaged"], "leastEngaged");
+    showTableEngaged(statistics["Most Engaged"], "mostEngaged");
 
-calculateStatistics(party);
+}).catch(function (error) {
+    console.log(error);
+});
 
-showTableAtaGlance(statistics.Party);
-showTableEngaged(statistics["Least Engaged"], "leastEngaged");
-showTableEngaged(statistics["Most Engaged"], "mostEngaged");
-
-
+/////////////////////////////////////////////////////////////////////////////
+////////////////////FUNCTIONS////////////////////////////////////////////////
 
 function calculateStatistics(value) {
     var memberParty = [];
@@ -77,9 +93,7 @@ function calculateStatistics(value) {
         });
     });
 
-
     getLeastMostEngaged(arrayVotesMissed);
-
 
 }
 
@@ -90,14 +104,11 @@ function getLeastMostEngaged(array) {
         return a - b;
     });
 
-
     var badMemberList = [];
     var goodMemberList = [];
 
-
     var indexMin = sortList[Math.round((allMembers.length / 10) - 1)]; //index for least engaged
     var indexMax = sortList[allMembers.length - (Math.round((allMembers.length / 10)))]; //index for most engaged
-
 
     //least Engaged
     goodMemberList = allMembers.filter(function (element) {
@@ -169,17 +180,9 @@ function showTableAtaGlance(value) {
     trTotal.append(tdTotal, tdTotalReps, tdTotalAvg);
     trTotal.style.fontWeight = "bold";
     myTBody.append(trTotal);
-
     document.getElementById("tableAtGlance").append(myTBody);
-
-
-
-
     return;
 }
-
-
-
 
 
 function showTableEngaged(value, table) {

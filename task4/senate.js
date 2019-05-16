@@ -1,5 +1,5 @@
 ///////////////// INIT ///////////////////////////////////////////////////////
-
+Vue.config.devtools = true
 var data;
 var allMembers;
 var filterByState = false;
@@ -11,7 +11,8 @@ const url = 'https://api.propublica.org/congress/v1/113/senate/members.json'
 var senators = new Vue({
     el: '#senate-data',
     data: {
-        members: []
+        members: [],
+        empty: false
     }
 });
 
@@ -33,15 +34,21 @@ fetch(url, {
 }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
     data = json;
     allMembers = data.results[0].members;
+    console.log(allMembers);
+
+    allMembers.forEach(function (member) {
+        AllStates.push(member.state); //CODE FOR DYNAMIC DROPDOWN
+        if (member.middle_name != null) {
+            member.last_name = member.middle_name + " " + member.last_name;
+        }
+    });
+
 
     senators.members = allMembers;
 
 
-    //CODE FOR DYNAMIC DROPDOWN
-    allMembers.forEach(function (member) {
-        AllStates.push(member.state);
 
-    });
+
 
     filteredStates = AllStates.filter(function (el, pos) {
         return AllStates.indexOf(el) == pos;
@@ -205,6 +212,10 @@ function filterTableByState(members, state) {
         }
     }
     senators.members = memberState;
+    senators.empty = false;
+    if (senators.members.length == 0) {
+        senators.empty = true;
+    }
     return;
 
 }
@@ -222,6 +233,7 @@ function getFilterTable() {
         filterByParty = false;
         if (filterByState == false) {
             senators.members = allMembers;
+            senators.empty = false;
             return;
         } else {
             filterTableByState(allMembers, filterMemberState);
@@ -233,6 +245,9 @@ function getFilterTable() {
 
     if (filterByState == false) {
         senators.members = filterMemberParty;
+        if (senators.members.length == 0) {
+            senators.empty = true;
+        }
         return;
     }
 

@@ -98,8 +98,24 @@
             </div>
             <div class="col-sm-6">
                 <h2>Senate at a glance</h2>
-                <table class="table table-responsive table-hover table-sm" id="tableAtGlance">
-
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Party</th>
+                        <th>Number of Reps</th>
+                        <th>% voted with Party</th>
+                    </thead>
+                    <tbody id="tableAtGlance">
+                        <tr v-for="info in information">
+                            <td>{{info.ID}}</td>
+                            <td>{{info.Number}}</td>
+                            <td>{{info["Average vote with Party"]}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>{{totalReps}}</td>
+                            <td>{{generalAvg}}</td>
+                        </tr>
+                    </tbody>
 
                 </table>
             </div>
@@ -107,15 +123,37 @@
         <div class="row">
             <div class="col-sm-6">
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm" id="leastEngaged">
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Name</th>
+                        <th>Num. Votes Missed</th>
+                        <th>% Votes Missed</th>
+                    </thead>
+                    <tbody id="leastEngaged">
+                        <tr v-for="member in members">
+                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                            <td>{{member.missed_votes}}</td>
+                            <td>{{member.missed_votes_pct}} %</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
 
             <div class="col-sm-6">
                 <h2>Most Engaged (Top 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm" id="mostEngaged">
-
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Name</th>
+                        <th>Num. Votes Missed</th>
+                        <th>% Votes Missed</th>
+                    </thead>
+                    <tbody id="mostEngaged">
+                        <tr v-for="member in members">
+                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                            <td>{{member.missed_votes}}</td>
+                            <td>{{member.missed_votes_pct}} %</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -124,6 +162,7 @@
     <footer class="navbar navbar-default">
         <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <!-- <script src="pro-congress-113-senate.js"></script> -->
     <script src="attendance_senate.js"></script>
 </body>

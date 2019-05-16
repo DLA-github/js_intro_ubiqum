@@ -1,16 +1,20 @@
 /////////////////// INIT ///////////////////////////////////////////////////////
-
-
+Vue.config.devtools = true;
+var sumAvg = 0;
+var divider = 0;
 var data;
 var allMembers;
 var party = ["D", "R", "I"];
-const url = 'https://api.propublica.org/congress/v1/113/house/members.json';
+const url = 'https://api.propublica.org/congress/v1/113/house/members.json'
+
 
 var statistics = {
     "Least Engaged": [],
     "Most Engaged": [],
     "Least Loyal": [],
     "Most Loyal": [],
+    "Total Reps": 0,
+    "General average": 0,
     "Party": [{
             "party": "D",
             "ID": "Democrat",
@@ -18,12 +22,15 @@ var statistics = {
             "List members": [],
             "Average vote with Party": 0,
         },
+
         {
+
             "party": "R",
             "ID": "Republican",
             "Number": 0,
             "List members": [],
             "Average vote with Party": 0,
+
         },
         {
             "party": "I",
@@ -31,9 +38,33 @@ var statistics = {
             "Number": 0,
             "List members": [],
             "Average vote with Party": 0,
+
         }
     ]
 };
+
+var generalTable = new Vue({
+    el: '#tableAtGlance',
+    data: {
+        information: [],
+        totalReps: 0,
+        generalAvg: 0
+    }
+});
+
+var leastWhatever = new Vue({
+    el: '#leastLoyal',
+    data: {
+        members: []
+    }
+});
+
+var mostWhatever = new Vue({
+    el: '#mostLoyal',
+    data: {
+        members: []
+    }
+});
 
 fetch(url, {
 
@@ -48,15 +79,28 @@ fetch(url, {
 }).then(function (json) {
     data = json;
     allMembers = data.results[0].members;
+    allMembers.forEach(function (member) {
+        if (member.middle_name != null) {
+            member.last_name = member.middle_name + " " + member.last_name;
+        }
+    });
+
+
     calculateStatistics(party);
-    showTableAtaGlance(statistics.Party);
-    showTableLoyal(statistics["Least Loyal"], "leastLoyal");
-    showTableLoyal(statistics["Most Loyal"], "mostLoyal");
+    console.log(statistics);
+    generalTable.information = statistics.Party;
+    generalTable.totalReps = statistics["Total Reps"];
+    generalTable.generalAvg = statistics["General average"];
+    leastWhatever.members = statistics["Least Loyal"];
+    mostWhatever.members = statistics["Most Loyal"];
+
+    // showTableAtaGlance(statistics.Party);
+    // showTableEngaged(statistics["Least Engaged"], "leastEngaged");
+    // showTableEngaged(statistics["Most Engaged"], "mostEngaged");
 
 }).catch(function (error) {
     console.log(error);
 });
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,17 +128,29 @@ function calculateStatistics(value) {
             if (party.party == val) {
                 party["List members"] = memberParty;
                 party.Number = party["List members"].length;
-                party["Average vote with Party"] = avg / party.Number;
+                if (party.Number == 0) {
+                    party["Average vote with Party"] = 0;
+                } else {
+                    party["Average vote with Party"] = (avg / party.Number).toFixed(3);
+                    divider++;
+                    sumAvg += (avg / party.Number);
+                }
+                statistics["Total Reps"] += party.Number;
             }
+
         });
+        statistics["General average"] = (sumAvg / divider).toFixed(3);
+
     });
+
+    console.log(divider);
 
     getLeastMostLoyal(arrayVotesParty);
 
 }
 
-function getLeastMostLoyal(array) {
 
+function getLeastMostLoyal(array) {
     var sortList = array.sort(function (a, b) {
         return a - b;
     });

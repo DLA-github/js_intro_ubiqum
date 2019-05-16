@@ -117,14 +117,20 @@
                 </thead>
 
                 <tbody id="senate-data">
-                    <tr v-for="member in members">
-                        <td> <a href={{member.url}}>{{member.first_name}} , {{member.last_name}}</a></td>
+                    <tr v-if='empty'>
+                        <td> </td>
+                        <td> </td>
+                        <td>NO MATCHES FOUND</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr v-else v-for="member in members">
+                        <td> <a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
                         <td> {{member.party}} </td>
                         <td> {{member.state}} </td>
                         <td> {{member.seniority}} </td>
                         <td> {{member.votes_with_party_pct}} </td>
                     </tr>
-                </tbody>
             </table>
         </div>
     </div>

@@ -68,43 +68,69 @@
     <div>
         <div class="row">
             <div class="col-sm-6">
-                <h2>Attendance</h2>
-                <p>The Constitution specifies that a majority of members constitutes a quorum to do business in each
-                    house.
-                    Representatives and senators rarely force the presence of a quorum by demanding quorum calls; thus,
-                    in
-                    most
-                    cases, debates continue even if a majority is not present.</p>
-
-                <p>The Senate uses roll-call votes; a clerk calls out the names of all the senators, each senator
-                    stating
-                    "aye"
-                    or "no" when his or her name is announced. The House reserves roll-call votes for the most formal
-                    matters,
-                    as a roll-call of all 435 representatives takes quite some time; normally, members vote by
-                    electronic
-                    device. In the case of a tie, the motion in question fails. In the Senate, the Vice President may
-                    (if
-                    present) cast the tiebreaking vote.</p>
+                <h2>Party Loyalty</h2>
+                <p>Those who consider themselves to be strong partisans, strong Democrats and strong Republicans
+                    respectively, tend to be the most faithful in voting for their party's nominee for office and
+                    legislation that backs their party's agenda. </p>
             </div>
             <div class="col-sm-6">
                 <h2>House at a glance</h2>
-                <table class="table table-responsive table-hover table-sm" id="tableAtGlance">
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Party</th>
+                        <th>Number of Reps</th>
+                        <th>% voted with Party</th>
+                    </thead>
+                    <tbody id="tableAtGlance">
+                        <tr v-for="info in information">
+                            <td>{{info.ID}}</td>
+                            <td>{{info.Number}}</td>
+                            <td>{{info["Average vote with Party"]}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>{{totalReps}}</td>
+                            <td>{{generalAvg}}</td>
+                        </tr>
+                    </tbody>
+
                 </table>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-6">
                 <h2>Least Loyal(Bottom 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm" id="leastLoyal">
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Name</th>
+                        <th>Total Votes/th>
+                        <th>% Votes With Party</th>
+                    </thead>
+                    <tbody id="leastLoyal">
+                        <tr v-for="member in members">
+                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                            <td>{{member.total_votes}}</td>
+                            <td>{{member.votes_with_party_pct}} %</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
 
             <div class="col-sm-6">
                 <h2>Most Loyal(Top 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm" id="mostLoyal">
-
+                <table class="table table-responsive table-hover table-sm">
+                    <thead>
+                        <th>Name</th>
+                        <th>Total Votes</th>
+                        <th>% Votes With Party</th>
+                    </thead>
+                    <tbody id="mostLoyal">
+                        <tr v-for="member in members">
+                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                            <td>{{member.total_votes}}</td>
+                            <td>{{member.votes_with_party_pct}} %</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -114,8 +140,9 @@
         <footer class="navbar navbar-default">
             <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
         </footer>
-        <script src="pro-congress-113-house.js"></script>
-        <script src="loyalty.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <!-- <script src="pro-congress-113-house.js"></script> -->
+        <script src="loyalty_house.js"></script>
 </body>
 
 </html>

@@ -88,7 +88,32 @@
             </div>
         </form>
         <div class="divTable container">
-            <table class="table table-responsive table-hover table-sm" id="house-data"></table>
+            <table class="table table-responsive table-hover table-sm">
+                <thead>
+                    <th>Name</th>
+                    <th>Party</th>
+                    <th>State</th>
+                    <th>Seniority</th>
+                    <th>% Votes With Party</th>
+                </thead>
+
+                <tbody id="house-data">
+                    <tr v-if='empty'>
+                        <td> </td>
+                        <td> </td>
+                        <td>NO MATCHES FOUND</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    <tr v-else v-for="member in members">
+                        <td> <a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                        <td> {{member.party}} </td>
+                        <td> {{member.state}} </td>
+                        <td> {{member.seniority}} </td>
+                        <td> {{member.votes_with_party_pct}} </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -96,7 +121,8 @@
     <footer class="navbar navbar-default">
         <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
     </footer>
-    <script src="pro-congress-113-house.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- <script src="pro-congress-113-house.js"></script> -->
     <script src="house.js"></script>
 
 </body>

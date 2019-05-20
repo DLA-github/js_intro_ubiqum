@@ -60,7 +60,7 @@
 
     </nav>
     <!--Table container-->
-    <div class="panel-body container">
+    <div class="panel-body container" id="app">
         <h2>Congressmen</h2>
         <p>The major power of the House is to pass federal legislation that affects the entire country, although its
             bills must also be passed by the Senate and further agreed to by the U.S. President before becoming law
@@ -72,22 +72,27 @@
             every state is entitled to at least one representative. </p>
         <form class="container" name="filter" id="filterForm" action="" method="">
             <div class="col-sm-6" id="byParty">
-                <div class="col-sm-3"><input type="checkbox" value="R" name="checkR" id="checkR"> Republican</input>
+                <div class="col-sm-3"><input type="checkbox" value="R" name="checkR" id="checkR"
+                        v-on:click="getFilterTable"> Republican</input>
                 </div>
-                <div class="col-sm-3"><input type="checkbox" value="D" name="checkD" id="checkD"> Democratic</input>
+                <div class="col-sm-3"><input type="checkbox" value="D" name="checkD" id="checkD"
+                        v-on:click="getFilterTable"> Democratic</input>
                 </div>
-                <div class="col-sm-3"><input type="checkbox" value="I" name="checkI" id="checkI">
+                <div class="col-sm-3"><input type="checkbox" value="I" name="checkI" id="checkI"
+                        v-on:click="getFilterTable">
                     Independent</input>
                 </div>
             </div>
 
             <div class="col-sm-3">
-                <select name="showByState" id="byState">
-
+                <select name="showByState" id="byState" v-model="state" v-on:change="getFilterTable">
+                    <option value="">All States</option>
+                    <option v-for="state in filteredStates" v-bind:value="state">{{state}}
                 </select>
             </div>
         </form>
-        <div class="divTable container">
+        <div v-if="allMembers.length==0" id="loader"></div>
+        <div class="divTable container" id="memberTable" v-else>
             <table class="table table-responsive table-hover table-sm">
                 <thead>
                     <th>Name</th>
@@ -98,7 +103,7 @@
                 </thead>
 
                 <tbody id="house-data">
-                    <tr v-if='empty'>
+                    <tr v-if="members.length == 0">
                         <td> </td>
                         <td> </td>
                         <td>NO MATCHES FOUND</td>
@@ -106,7 +111,7 @@
                         <td> </td>
                     </tr>
                     <tr v-else v-for="member in members">
-                        <td> <a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                        <td> <a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
                         <td> {{member.party}} </td>
                         <td> {{member.state}} </td>
                         <td> {{member.seniority}} </td>
@@ -123,7 +128,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <!-- <script src="pro-congress-113-house.js"></script> -->
-    <script src="house.js"></script>
+    <script src="chamber_vue.js"></script>
 
 </body>
 

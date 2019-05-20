@@ -65,7 +65,7 @@
         </div>
     </header>
     <!--Table container-->
-    <div>
+    <div id="app">
         <div class="row">
             <div class="col-sm-6">
                 <h2>Attendance</h2>
@@ -87,7 +87,8 @@
                     (if
                     present) cast the tiebreaking vote.</p>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6 loader" id="loader1" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
                 <h2>House at a glance</h2>
                 <table class="table table-responsive table-hover table-sm">
                     <thead>
@@ -96,10 +97,10 @@
                         <th>% voted with Party</th>
                     </thead>
                     <tbody id="tableAtGlance">
-                        <tr v-for="info in information">
-                            <td>{{info.ID}}</td>
-                            <td>{{info.Number}}</td>
-                            <td>{{info["Average vote with Party"]}}</td>
+                        <tr v-for="each in Party">
+                            <td>{{each.ID}}</td>
+                            <td>{{each.Number}}</td>
+                            <td>{{each["Average vote with Party"]}}</td>
                         </tr>
                         <tr>
                             <td>Total</td>
@@ -112,7 +113,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-6 loader" id="loader2" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
                 <table class="table table-responsive table-hover table-sm">
                     <thead>
@@ -121,8 +123,8 @@
                         <th>% Votes Missed</th>
                     </thead>
                     <tbody id="leastEngaged">
-                        <tr v-for="member in members">
-                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                        <tr v-for="member in LeastEngaged">
+                            <td><a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
                             <td>{{member.missed_votes}}</td>
                             <td>{{member.missed_votes_pct}} %</td>
                         </tr>
@@ -131,7 +133,8 @@
             </div>
 
 
-            <div class="col-sm-6">
+            <div class="col-sm-6 loader" id="loader3" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
                 <h2>Most Engaged (Top 10% Attendance)</h2>
                 <table class="table table-responsive table-hover table-sm">
                     <thead>
@@ -140,8 +143,8 @@
                         <th>% Votes Missed</th>
                     </thead>
                     <tbody id="mostEngaged">
-                        <tr v-for="member in members">
-                            <td><a href={{member.url}}>{{member.last_name}} , {{member.first_name}}</a></td>
+                        <tr v-for="member in MostEngaged">
+                            <td><a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
                             <td>{{member.missed_votes}}</td>
                             <td>{{member.missed_votes_pct}} %</td>
                         </tr>
@@ -156,7 +159,7 @@
         </footer>
         <!-- <script src="pro-congress-113-house.js"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-        <script src="attendance_house.js"></script>
+        <script src="attendance_vue.js"></script>
 </body>
 
 </html>

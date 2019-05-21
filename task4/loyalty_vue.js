@@ -14,6 +14,55 @@ if (myLocation[0] == "/senate") {
 var data;
 var party = ["D", "R", "I"];
 
+Vue.component('testing', {
+    props: {
+        message: Array,
+    },
+    template: `<table class="table table-responsive table-hover table-sm">
+    <thead>
+        <th>Name</th>
+        <th>Total Votes/th>
+        <th>% Votes With Party</th>
+    </thead>
+    <tbody id="leastLoyal">
+        <tr v-for="member in message">
+            <td><a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
+            <td>{{member.total_votes}}</td>
+            <td>{{member.votes_with_party_pct}} %</td>
+        </tr>
+    </tbody>
+</table>`
+
+});
+Vue.component('first-table', {
+    props: {
+        message: Array,
+        totalreps: Number,
+        generalavg: Number
+    },
+    template: `<table class="table table-responsive table-hover table-sm">
+    <thead>
+        <th>Party</th>
+        <th>Number of Reps</th>
+        <th>% voted with Party</th>
+    </thead>
+    <tbody id="tableAtGlance">
+        <tr v-for="each in message">
+            <td>{{each.ID}}</td>
+            <td>{{each.Number}}</td>
+            <td>{{each["Average vote with Party"]}} %</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{totalreps}}</td>
+            <td>{{generalavg}} %</td>
+        </tr>
+    </tbody>
+
+</table>`
+
+});
+
 
 var loyalty = new Vue({
     el: "#app",

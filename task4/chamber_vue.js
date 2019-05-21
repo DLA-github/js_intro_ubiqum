@@ -15,6 +15,33 @@ if (myLocation[0] == "/senate") {
 } else {
     chamber = "house";
 }
+Vue.component('test', {
+    props: ["message"],
+    template: `<table class="table table-responsive table-hover table-sm">
+    <thead>
+        <th>Name</th>
+        <th>Party</th>
+        <th>State</th>
+        <th>Seniority</th>
+        <th>% Votes With Party</th>
+    </thead>
+
+    <tbody>
+        <tr v-if='message.length == 0'>
+            
+            <td>NO MATCHES FOUND
+            </td>
+            
+        </tr>
+        <tr v-for="msg in message">
+            <td> <a v-bind:href="msg.url">{{msg.last_name}} , {{msg.first_name}}</a></td>
+            <td> {{msg.party}} </td>
+            <td> {{msg.state}} </td>
+            <td> {{msg.seniority}} </td>
+            <td> {{msg.votes_with_party_pct}} % </td>
+        </tr>
+    </table>>`
+});
 
 var senate = new Vue({
 

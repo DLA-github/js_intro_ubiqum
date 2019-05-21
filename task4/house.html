@@ -93,32 +93,7 @@
         </form>
         <div v-if="allMembers.length==0" id="loader"></div>
         <div class="divTable container" id="memberTable" v-else>
-            <table class="table table-responsive table-hover table-sm">
-                <thead>
-                    <th>Name</th>
-                    <th>Party</th>
-                    <th>State</th>
-                    <th>Seniority</th>
-                    <th>% Votes With Party</th>
-                </thead>
-
-                <tbody id="house-data">
-                    <tr v-if="members.length == 0">
-                        <td> </td>
-                        <td> </td>
-                        <td>NO MATCHES FOUND</td>
-                        <td> </td>
-                        <td> </td>
-                    </tr>
-                    <tr v-else v-for="member in members">
-                        <td> <a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
-                        <td> {{member.party}} </td>
-                        <td> {{member.state}} </td>
-                        <td> {{member.seniority}} </td>
-                        <td> {{member.votes_with_party_pct}} </td>
-                    </tr>
-                </tbody>
-            </table>
+            <test :message="members"></test>
         </div>
 
     </div>

@@ -90,66 +90,21 @@
             <div class="col-sm-6 loader" id="loader1" v-if="allMembers.length==0"></div>
             <div class="col-sm-6 memberTable" v-else>
                 <h2>House at a glance</h2>
-                <table class="table table-responsive table-hover table-sm">
-                    <thead>
-                        <th>Party</th>
-                        <th>Number of Reps</th>
-                        <th>% voted with Party</th>
-                    </thead>
-                    <tbody id="tableAtGlance">
-                        <tr v-for="each in Party">
-                            <td>{{each.ID}}</td>
-                            <td>{{each.Number}}</td>
-                            <td>{{each["Average vote with Party"]}}</td>
-                        </tr>
-                        <tr>
-                            <td>Total</td>
-                            <td>{{totalReps}}</td>
-                            <td>{{generalAvg}}</td>
-                        </tr>
-                    </tbody>
-
-                </table>
+                <first-table :message="Party" :totalreps="totalReps" :generalavg="generalAvg"></first-table>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-6 loader" id="loader2" v-if="allMembers.length==0"></div>
             <div class="col-sm-6 memberTable" v-else>
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm">
-                    <thead>
-                        <th>Name</th>
-                        <th>Num. Votes Missed</th>
-                        <th>% Votes Missed</th>
-                    </thead>
-                    <tbody id="leastEngaged">
-                        <tr v-for="member in LeastEngaged">
-                            <td><a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
-                            <td>{{member.missed_votes}}</td>
-                            <td>{{member.missed_votes_pct}} %</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <testing :message="LeastEngaged"></testing>
             </div>
 
 
             <div class="col-sm-6 loader" id="loader3" v-if="allMembers.length==0"></div>
             <div class="col-sm-6 memberTable" v-else>
                 <h2>Most Engaged (Top 10% Attendance)</h2>
-                <table class="table table-responsive table-hover table-sm">
-                    <thead>
-                        <th>Name</th>
-                        <th>Num. Votes Missed</th>
-                        <th>% Votes Missed</th>
-                    </thead>
-                    <tbody id="mostEngaged">
-                        <tr v-for="member in MostEngaged">
-                            <td><a v-bind:href="member.url">{{member.last_name}} , {{member.first_name}}</a></td>
-                            <td>{{member.missed_votes}}</td>
-                            <td>{{member.missed_votes_pct}} %</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <testing :message="MostEngaged"></testing>
             </div>
 
 

@@ -43,8 +43,18 @@ Vue.component('test', {
     </table>>`
 });
 
-var senate = new Vue({
 
+var states = new Vue({
+    el: "#state",
+    data: {
+        states: data,
+        st: ""
+    }
+});
+
+
+
+var senate = new Vue({
 
     el: '#app',
     data: {

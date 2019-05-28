@@ -109,27 +109,36 @@ var attendance = new Vue({
     methods: {
         getInfo: function () {
             //if data storaged
+            let expiration = 1200; // sec
             var allStates = [];
-            let cached = localStorage.getItem(info);
-            if (cached !== null) {
-                let data = JSON.parse(localStorage.getItem(info));
-                this.allMembers = data.results[0].members;
-                this.allMembers.forEach(member => {
-                    if (member.middle_name != null) {
-                        member.last_name = member.middle_name + " " + member.last_name;
-                    }
-                    allStates.push(member.state);
-                });
+            let cached = JSON.parse(localStorage.getItem(info));
 
-                this.filteredStates = allStates.filter(function (el, pos) {
-                    return allStates.indexOf(el) == pos;
-                });
-                this.filteredStates.sort();
-                this.calculateStatistics(party);
-                let response = new Response(new Blob([cached]))
-                return Promise.resolve(response)
+
+            if (cached !== null) {
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
+
+                if (now - dateString < expiration) {
+
+                    this.allMembers = cached.value.results[0].members;
+                    this.allMembers.forEach(member => {
+                        if (member.middle_name != null) {
+                            member.last_name = member.middle_name + " " + member.last_name;
+                        }
+                        allStates.push(member.state);
+                    });
+
+                    this.filteredStates = allStates.filter(function (el, pos) {
+                        return allStates.indexOf(el) == pos;
+                    });
+                    this.filteredStates.sort();
+                    this.calculateStatistics(party);
+                    let response = new Response(new Blob([cached]))
+                    return Promise.resolve(response)
+                }
+                localStorage.removeItem(info);
             }
-            //if not
+
             return fetch(this.url, {
                 method: "GET",
                 headers: {
@@ -140,11 +149,16 @@ var attendance = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                localStorage.setItem(info, information);
+                let myData = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem(info, JSON.stringify(myData));
 
                 let data = JSON.parse(localStorage.getItem(info));
-                attendance.allMembers = data.results[0].members;
+                attendance.allMembers = data.value.results[0].members;
+
                 attendance.allMembers.forEach(member => {
                     if (member.middle_name != null) {
                         member.last_name = member.middle_name + " " + member.last_name;

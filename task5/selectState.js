@@ -53,24 +53,33 @@ var states = new Vue({
         getInfoHouse: function () {
             //if data storaged
             let allStates = [];
+            let expiration = 1200; // sec
+            let cached = JSON.parse(localStorage.getItem('house'));
             let url = "https://api.propublica.org/congress/v1/113/house/members.json";
-            let cached = localStorage.getItem('house');
-            if (cached !== null) {
-                let data = JSON.parse(localStorage.getItem('house'));
-                this.houseData = data.results[0].members;
-                this.houseData.forEach(member => {
-                    if (member.middle_name != null) {
-                        member.last_name = member.middle_name + " " + member.last_name;
-                    }
-                    allStates.push(member.state);
-                });
 
-                this.filteredStates = allStates.filter(function (el, pos) {
-                    return allStates.indexOf(el) == pos;
-                });
-                this.filteredStates.sort();
-                let response = new Response(new Blob([cached]))
-                return Promise.resolve(response)
+            if (cached !== null) {
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
+
+                if (now - dateString < expiration) {
+
+
+                    this.houseData = cached.value.results[0].members;
+                    this.houseData.forEach(member => {
+                        if (member.middle_name != null) {
+                            member.last_name = member.middle_name + " " + member.last_name;
+                        }
+                        allStates.push(member.state);
+                    });
+
+                    this.filteredStates = allStates.filter(function (el, pos) {
+                        return allStates.indexOf(el) == pos;
+                    });
+                    this.filteredStates.sort();
+                    let response = new Response(new Blob([cached]))
+                    return Promise.resolve(response)
+                }
+                localStorage.removeItem('house');
             }
             //if not
             return fetch(url, {
@@ -83,11 +92,16 @@ var states = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                localStorage.setItem('house', information);
+                let house = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem('house', JSON.stringify(house));
+
 
                 let data = JSON.parse(localStorage.getItem('house'));
-                states.houseData = data.results[0].members;
+                states.houseData = data.value.results[0].members;
                 states.houseData.forEach(member => {
                     if (member.middle_name != null) {
                         member.last_name = member.middle_name + " " + member.last_name;
@@ -105,19 +119,28 @@ var states = new Vue({
             });
         },
         getInfoSenate: function () {
+            let expiration = 1200; // sec
+            let cached = JSON.parse(localStorage.getItem('senate'));
             let url = "https://api.propublica.org/congress/v1/113/senate/members.json";
-            let cached = localStorage.getItem('senate');
+
             if (cached !== null) {
-                let data = JSON.parse(localStorage.getItem('senate'));
-                this.senateData = data.results[0].members;
-                this.senateData.forEach(member => {
-                    if (member.middle_name != null) {
-                        member.last_name = member.middle_name + " " + member.last_name;
-                    }
-                });
-                this.mergeMembers();
-                let response = new Response(new Blob([cached]))
-                return Promise.resolve(response)
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
+
+                if (now - dateString < expiration) {
+
+
+                    this.senateData = cached.value.results[0].members;
+                    this.senateData.forEach(member => {
+                        if (member.middle_name != null) {
+                            member.last_name = member.middle_name + " " + member.last_name;
+                        }
+                    });
+                    this.mergeMembers();
+                    let response = new Response(new Blob([cached]))
+                    return Promise.resolve(response)
+                }
+                localStorage.removeItem('senate');
             }
             //if not
             return fetch(url, {
@@ -130,11 +153,16 @@ var states = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                localStorage.setItem('senate', information);
+                let senate = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem('senate', JSON.stringify(senate));
+
 
                 let data = JSON.parse(localStorage.getItem('senate'));
-                states.senateData = data.results[0].members;
+                states.senateData = data.value.results[0].members;
                 states.senateData.forEach(member => {
                     if (member.middle_name != null) {
                         member.last_name = member.middle_name + " " + member.last_name;

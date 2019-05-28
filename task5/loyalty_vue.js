@@ -107,26 +107,35 @@ var loyalty = new Vue({
     methods: {
         getInfo: function () {
             //if data storaged
+            let expiration = 1200; // sec
             var allStates = [];
-            let cached = localStorage.getItem(info);
+            let cached = JSON.parse(localStorage.getItem(info));
+
+
             if (cached !== null) {
-                let data = JSON.parse(localStorage.getItem(info));
-                this.allMembers = data.results[0].members;
-                this.allMembers.forEach(member => {
-                    if (member.middle_name != null) {
-                        member.last_name = member.middle_name + " " + member.last_name;
-                    }
-                    allStates.push(member.state);
-                });
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
 
-                this.filteredStates = allStates.filter(function (el, pos) {
-                    return allStates.indexOf(el) == pos;
-                });
-                this.filteredStates.sort();
+                if (now - dateString < expiration) {
 
-                this.calculateStatistics(party);
-                let response = new Response(new Blob([cached]))
-                return Promise.resolve(response)
+                    this.allMembers = cached.value.results[0].members;
+                    this.allMembers.forEach(member => {
+                        if (member.middle_name != null) {
+                            member.last_name = member.middle_name + " " + member.last_name;
+                        }
+                        allStates.push(member.state);
+                    });
+
+                    this.filteredStates = allStates.filter(function (el, pos) {
+                        return allStates.indexOf(el) == pos;
+                    });
+                    this.filteredStates.sort();
+
+                    this.calculateStatistics(party);
+                    let response = new Response(new Blob([cached]))
+                    return Promise.resolve(response)
+                }
+                localStorage.removeItem(info);
             }
             //if not
             return fetch(this.url, {
@@ -139,11 +148,16 @@ var loyalty = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                localStorage.setItem(info, information);
+                let myData = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem(info, JSON.stringify(myData));
+
 
                 let data = JSON.parse(localStorage.getItem(info));
-                loyalty.allMembers = data.results[0].members;
+                loyalty.allMembers = data.value.results[0].members;
                 loyalty.allMembers.forEach(member => {
                     if (member.middle_name != null) {
                         member.last_name = member.middle_name + " " + member.last_name;

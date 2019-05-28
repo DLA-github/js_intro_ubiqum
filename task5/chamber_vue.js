@@ -1,14 +1,12 @@
 Vue.config.devtools = true
-var filterByState = false;
-var filterByParty = false;
+
 var filterMemberState;
 var AllStates = [];
-var filteredStates = [];
 
 var myLocation = window.location.pathname;
 var chamber = "";
 myLocation = myLocation.split(".");
-console.log(myLocation);
+
 
 if (myLocation[0] == "/senate") {
     chamber = "senate";
@@ -32,8 +30,11 @@ Vue.component('test', {
     <tbody>
         <tr v-if='message.length == 0'>
             <td></td>
+            <td></td>
             <td style="color:red;text-align:center">NO MATCHES FOUND
             </td>
+            <td></td>
+            <td></td>
 
         </tr>
         <tr v-for="msg in message">
@@ -67,25 +68,34 @@ var senate = new Vue({
     },
     methods: {
         getInfo: function () {
+
+            let expiration = 1200; // sec
             var allStates = [];
-            let cached = localStorage.getItem(info);
+            let cached = JSON.parse(localStorage.getItem(info));
+
+
             if (cached !== null) {
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
 
-                let data = JSON.parse(cached);
-                console.log(data.results[0].members);
-                this.allMembers = data.results[0].members;
-                this.members = this.allMembers;
-                console.log(this.allMembers);
-                this.allMembers.forEach(function (member) {
-                    allStates.push(member.state);
-                });
-                this.filteredStates = allStates.filter(function (el, pos) {
-                    return allStates.indexOf(el) == pos;
-                });
-                this.filteredStates.sort();
-                let response = new Response(new Blob([cached]))
+                if (now - dateString < expiration) {
 
-                return Promise.resolve(response)
+                    this.allMembers = cached.value.results[0].members;
+                    this.members = this.allMembers;
+                    console.log(this.allMembers);
+                    this.allMembers.forEach(function (member) {
+                        allStates.push(member.state);
+                    });
+                    this.filteredStates = allStates.filter(function (el, pos) {
+                        return allStates.indexOf(el) == pos;
+                    });
+                    this.filteredStates.sort();
+                    let response = new Response(new Blob([cached]))
+
+                    return Promise.resolve(response)
+
+                }
+                localStorage.removeItem(info);
             }
             //if not
             return fetch(this.url, {
@@ -98,13 +108,19 @@ var senate = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                console.log(information);
-                localStorage.setItem(info, information);
+
+                // date = Math.floor(Date.now() / 1000);
+                //set timestamp inside data
+                let myData = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem(info, JSON.stringify(myData));
 
 
                 let data = JSON.parse(localStorage.getItem(info));
-                senate.allMembers = data.results[0].members;
+                senate.allMembers = data.value.results[0].members;
                 senate.members = senate.allMembers;
 
                 senate.allMembers.forEach(function (member) {

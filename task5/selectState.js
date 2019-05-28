@@ -6,26 +6,26 @@ var filterState = window.location.search.split("?=").pop();
 
 Vue.component('table-state', {
     props: ["message"],
-    template: `<table class="table table-responsive table-hover table-sm">
+    template: `
+    
+    <div>
+    <table class="table table-responsive table-hover table-sm">
     <thead>
         <th>Name</th>
         <th>Party</th>
         <th>Chamber</th>
     </thead>
-
     <tbody>
-        <tr v-if='message.length == 0'>
-            <td></td>
-            <td style="color:red;text-align:center">NO MATCHES FOUND
-            </td>
-
-        </tr>
-        <tr v-for="msg in message">
-            <td> <a v-bind:href="msg.url">{{msg.last_name}}, {{msg.first_name}}</a></td>
-            <td> {{msg.party}} </td>
-            <td> {{msg.title}} </td>
-        </tr>
-    </table>`
+    <tr v-for="msg in message">
+        <td> <a v-bind:href="msg.url">{{msg.last_name}}, {{msg.first_name}}</a></td>
+        <td> {{msg.party}} </td>
+        <td> {{msg.title}} </td>
+    </tr>
+    </tbody>
+    </table> 
+    <div class="col-sm-12" style="color:red;text-align:center;" v-if='message.length == 0'>NO MATCHES FOUND</div>
+    </div>
+    `
 });
 
 

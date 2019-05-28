@@ -18,7 +18,9 @@ var info = "legislators-" + chamber;
 
 Vue.component('test', {
     props: ["message"],
-    template: `<table class="table table-responsive table-hover table-sm">
+    template: `
+    <div>
+    <table class="table table-responsive table-hover table-sm">
     <thead>
         <th>Name</th>
         <th>Party</th>
@@ -28,15 +30,6 @@ Vue.component('test', {
     </thead>
 
     <tbody>
-        <tr v-if='message.length == 0'>
-            <td></td>
-            <td></td>
-            <td style="color:red;text-align:center">NO MATCHES FOUND
-            </td>
-            <td></td>
-            <td></td>
-
-        </tr>
         <tr v-for="msg in message">
             <td> <a v-bind:href="msg.url">{{msg.last_name}} , {{msg.first_name}}</a></td>
             <td> {{msg.party}} </td>
@@ -44,7 +37,9 @@ Vue.component('test', {
             <td> {{msg.seniority}} </td>
             <td> {{msg.votes_with_party_pct}} % </td>
         </tr>
-    </table>`
+    </table>
+    <div class="col-sm-12" style="color:red;text-align:center;" v-if='message.length == 0'>NO MATCHES FOUND</div>
+    </div>`
 });
 
 

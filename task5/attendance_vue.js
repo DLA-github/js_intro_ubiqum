@@ -15,7 +15,7 @@ var info = "attendance-" + chamber;
 
 var party = ["D", "R", "I"];
 
-Vue.component('testing', {
+Vue.component('most-least-table', {
     props: {
         message: "",
     },
@@ -111,7 +111,7 @@ var attendance = new Vue({
             //if data storaged
             let expiration = 1200; // sec
             var allStates = [];
-            let cached = JSON.parse(localStorage.getItem(info));
+            let cached = JSON.parse(localStorage.getItem(this.url));
 
 
             if (cached !== null) {
@@ -136,7 +136,7 @@ var attendance = new Vue({
                     let response = new Response(new Blob([cached]))
                     return Promise.resolve(response)
                 }
-                localStorage.removeItem(info);
+                localStorage.removeItem(this.url);
             }
 
             return fetch(this.url, {
@@ -154,9 +154,9 @@ var attendance = new Vue({
                     timestamp: new Date().getTime()
                 }
 
-                localStorage.setItem(info, JSON.stringify(myData));
+                localStorage.setItem(attendance.url, JSON.stringify(myData));
 
-                let data = JSON.parse(localStorage.getItem(info));
+                let data = JSON.parse(localStorage.getItem(attendance.url));
                 attendance.allMembers = data.value.results[0].members;
 
                 attendance.allMembers.forEach(member => {

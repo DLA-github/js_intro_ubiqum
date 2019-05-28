@@ -1,5 +1,5 @@
 * {
-    font-family: 'Fira Sans', sans-serif;
+    font-family: 'Oxygen', sans-serif;
 }
 
 /* .active {
@@ -31,7 +31,8 @@ tr:first-child {
 
 
 p {
-    font-size: 17px;
+    font-size: 16px;
+    text-align: justify;
 }
 
 

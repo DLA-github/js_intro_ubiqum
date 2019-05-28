@@ -44,7 +44,7 @@ Vue.component('test', {
 
 
 
-var senate = new Vue({
+var congress = new Vue({
 
     el: '#app',
 
@@ -66,7 +66,7 @@ var senate = new Vue({
 
             let expiration = 1200; // sec
             var allStates = [];
-            let cached = JSON.parse(localStorage.getItem(info));
+            let cached = JSON.parse(localStorage.getItem(this.url));
 
 
             if (cached !== null) {
@@ -90,7 +90,7 @@ var senate = new Vue({
                     return Promise.resolve(response)
 
                 }
-                localStorage.removeItem(info);
+                localStorage.removeItem(this.url);
             }
             //if not
             return fetch(this.url, {
@@ -111,20 +111,20 @@ var senate = new Vue({
                     timestamp: new Date().getTime()
                 }
 
-                localStorage.setItem(info, JSON.stringify(myData));
+                localStorage.setItem(congress.url, JSON.stringify(myData));
 
 
-                let data = JSON.parse(localStorage.getItem(info));
-                senate.allMembers = data.value.results[0].members;
-                senate.members = senate.allMembers;
+                let data = JSON.parse(localStorage.getItem(congress.url));
+                congress.allMembers = data.value.results[0].members;
+                congress.members = congress.allMembers;
 
-                senate.allMembers.forEach(function (member) {
+                congress.allMembers.forEach(function (member) {
                     allStates.push(member.state);
                 });
-                senate.filteredStates = allStates.filter(function (el, pos) {
+                congress.filteredStates = allStates.filter(function (el, pos) {
                     return allStates.indexOf(el) == pos;
                 });
-                senate.filteredStates.sort();
+                congress.filteredStates.sort();
 
 
 

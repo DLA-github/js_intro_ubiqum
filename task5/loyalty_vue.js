@@ -12,7 +12,7 @@ if (myLocation[0] == "/senate") {
 var info = "loyalty-" + chamber;
 var party = ["D", "R", "I"];
 
-Vue.component('testing', {
+Vue.component('most-least-table', {
     props: {
         message: Array,
     },
@@ -109,7 +109,7 @@ var loyalty = new Vue({
             //if data storaged
             let expiration = 1200; // sec
             var allStates = [];
-            let cached = JSON.parse(localStorage.getItem(info));
+            let cached = JSON.parse(localStorage.getItem(this.url));
 
 
             if (cached !== null) {
@@ -135,7 +135,7 @@ var loyalty = new Vue({
                     let response = new Response(new Blob([cached]))
                     return Promise.resolve(response)
                 }
-                localStorage.removeItem(info);
+                localStorage.removeItem(this.url);
             }
             //if not
             return fetch(this.url, {
@@ -153,10 +153,10 @@ var loyalty = new Vue({
                     timestamp: new Date().getTime()
                 }
 
-                localStorage.setItem(info, JSON.stringify(myData));
+                localStorage.setItem(loyalty.url, JSON.stringify(myData));
 
 
-                let data = JSON.parse(localStorage.getItem(info));
+                let data = JSON.parse(localStorage.getItem(loyalty.url));
                 loyalty.allMembers = data.value.results[0].members;
                 loyalty.allMembers.forEach(member => {
                     if (member.middle_name != null) {

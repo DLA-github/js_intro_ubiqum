@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
     <title>Senate Loyalty Party</title>
 </head>
 
@@ -98,12 +98,12 @@
                 <div class="col-sm-6 loader" id="loader2" v-if="allMembers.length==0"></div>
                 <div class="col-sm-6 memberTable" v-else>
                     <h2>Least Loyal (Bottom 10% of Party)</h2>
-                    <testing :message="LeastLoyal"></testing>
+                    <most-least-table :message="LeastLoyal"></most-least-table>
                 </div>
                 <div class="col-sm-6 loader" id="loader3" v-if="allMembers.length==0"></div>
                 <div class="col-sm-6 memberTable" v-else>
                     <h2>Most Loyal (Top 10% of Party)</h2>
-                    <testing :message="MostLoyal"></testing>
+                    <most-least-table :message="MostLoyal"></most-least-table>
                 </div>
             </div>
         </div>

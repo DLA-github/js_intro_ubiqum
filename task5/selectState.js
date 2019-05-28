@@ -54,8 +54,8 @@ var states = new Vue({
             //if data storaged
             let allStates = [];
             let expiration = 1200; // sec
-            let cached = JSON.parse(localStorage.getItem('house'));
             let url = "https://api.propublica.org/congress/v1/113/house/members.json";
+            let cached = JSON.parse(localStorage.getItem(url));
 
             if (cached !== null) {
                 let now = Math.floor(new Date().getTime().toString() / 1000);
@@ -79,7 +79,7 @@ var states = new Vue({
                     let response = new Response(new Blob([cached]))
                     return Promise.resolve(response)
                 }
-                localStorage.removeItem('house');
+                localStorage.removeItem(url);
             }
             //if not
             return fetch(url, {
@@ -97,10 +97,10 @@ var states = new Vue({
                     timestamp: new Date().getTime()
                 }
 
-                localStorage.setItem('house', JSON.stringify(house));
+                localStorage.setItem(url, JSON.stringify(house));
 
 
-                let data = JSON.parse(localStorage.getItem('house'));
+                let data = JSON.parse(localStorage.getItem(url));
                 states.houseData = data.value.results[0].members;
                 states.houseData.forEach(member => {
                     if (member.middle_name != null) {
@@ -120,8 +120,9 @@ var states = new Vue({
         },
         getInfoSenate: function () {
             let expiration = 1200; // sec
-            let cached = JSON.parse(localStorage.getItem('senate'));
             let url = "https://api.propublica.org/congress/v1/113/senate/members.json";
+            let cached = JSON.parse(localStorage.getItem(url));
+
 
             if (cached !== null) {
                 let now = Math.floor(new Date().getTime().toString() / 1000);
@@ -140,7 +141,7 @@ var states = new Vue({
                     let response = new Response(new Blob([cached]))
                     return Promise.resolve(response)
                 }
-                localStorage.removeItem('senate');
+                localStorage.removeItem(url);
             }
             //if not
             return fetch(url, {
@@ -158,10 +159,10 @@ var states = new Vue({
                     timestamp: new Date().getTime()
                 }
 
-                localStorage.setItem('senate', JSON.stringify(senate));
+                localStorage.setItem(url, JSON.stringify(senate));
 
 
-                let data = JSON.parse(localStorage.getItem('senate'));
+                let data = JSON.parse(localStorage.getItem(url));
                 states.senateData = data.value.results[0].members;
                 states.senateData.forEach(member => {
                     if (member.middle_name != null) {

@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
     <title>House Attendance</title>
 </head>
 
@@ -110,14 +110,14 @@
             <div class="col-sm-6 loader" id="loader2" v-if="allMembers.length==0"></div>
             <div class="col-sm-6 memberTable" v-else>
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
-                <testing :message="LeastEngaged"></testing>
+                <most-least-table :message="LeastEngaged"></most-least-table>
             </div>
 
 
             <div class="col-sm-6 loader" id="loader3" v-if="allMembers.length==0"></div>
             <div class="col-sm-6 memberTable" v-else>
                 <h2>Most Engaged (Top 10% Attendance)</h2>
-                <testing :message="MostEngaged"></testing>
+                <most-least-table :message="MostEngaged"></most-least-table>
             </div>
 
 

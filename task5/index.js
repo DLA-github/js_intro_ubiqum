@@ -18,25 +18,32 @@ var senate = new Vue({
     },
     methods: {
         getInfo: function () {
+            let expiration = 1200; // sec
             var allStates = [];
-            let cached = localStorage.getItem(info);
+            let cached = JSON.parse(localStorage.getItem(this.url));
+
+
             if (cached !== null) {
+                let now = Math.floor(new Date().getTime().toString() / 1000);
+                let dateString = Math.floor(cached.timestamp / 1000);
 
-                let data = JSON.parse(cached);
-                console.log(data.results[0].members);
-                this.allMembers = data.results[0].members;
-                this.members = this.allMembers;
-                console.log(this.allMembers);
-                this.allMembers.forEach(function (member) {
-                    allStates.push(member.state);
-                });
-                this.filteredStates = allStates.filter(function (el, pos) {
-                    return allStates.indexOf(el) == pos;
-                });
-                this.filteredStates.sort();
-                let response = new Response(new Blob([cached]))
+                if (now - dateString < expiration) {
 
-                return Promise.resolve(response)
+                    this.allMembers = cached.value.results[0].members;
+                    this.members = this.allMembers;
+                    console.log(this.allMembers);
+                    this.allMembers.forEach(function (member) {
+                        allStates.push(member.state);
+                    });
+                    this.filteredStates = allStates.filter(function (el, pos) {
+                        return allStates.indexOf(el) == pos;
+                    });
+                    this.filteredStates.sort();
+                    let response = new Response(new Blob([cached]))
+
+                    return Promise.resolve(response)
+                }
+                localStorage.removeItem(this.url);
             }
             //if not
             return fetch(this.url, {
@@ -49,13 +56,17 @@ var senate = new Vue({
                     return response.json();
                 }
             }).then(function (json) { ///////////////////////MANAGEMENT OF DATA//////////
-                let information = JSON.stringify(json);
-                console.log(information);
-                localStorage.setItem(info, information);
+                //set timestamp inside data
+                let myData = {
+                    value: json,
+                    timestamp: new Date().getTime()
+                }
+
+                localStorage.setItem(senate.url, JSON.stringify(myData));
 
 
-                let data = JSON.parse(localStorage.getItem(info));
-                senate.allMembers = data.results[0].members;
+                let data = JSON.parse(localStorage.getItem(senate.url));
+                senate.allMembers = data.value.results[0].members;
                 senate.members = senate.allMembers;
 
                 senate.allMembers.forEach(function (member) {

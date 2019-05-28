@@ -1,7 +1,17 @@
+<!DOCTYPE html>
+<script>
+    var statistics = {
+        "Number of Democrats": 0,
+        "Number of Republicans": 0,
+        "Vote with Party": 0,
+        "No Vote With Party": 0,
+        "Missed Votes": 0,
+        "No Missed Votes": 0
+    };
+</script>
 <html lang="en">
 
 <head>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
@@ -9,11 +19,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
-    <title>test</title>
+    <title>Senate Attendance</title>
 </head>
 
-
-<body class="container text-center">
+<body class="container">
     <div id="app">
         <header>
             <div class="flexheader">
@@ -41,8 +50,8 @@
                         </ul>
 
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Attendance<span
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Attendance-Senate<span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="senate_attendance_page.html">Senate</a></li>
@@ -59,58 +68,65 @@
                         </ul>
 
                     </li>
-                    <li class="dropdown active" id="dropstate">
-                        <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Legislators By
-                            State<span class="caret"></span></a>
-
-                        <ul class="dropdown-menu">
-                            <li v-for="state in filteredStates " v-model="st">
-                                <a :href="'LegislatorsbyState.html?='+ state">{{state}}</a>
-                            </li>
-                        </ul>
-
-                    </li>
-
                 </ul>
             </div>
 
         </nav>
 
-        <did class="container">
-            <form class="row" action="">
-                <div class="col-sm-6">
-                    <input type="checkbox" value="Republican" v-model="filters">
-                    Republican
-                    <input type="checkbox" value="Democratic" v-model="filters">
-                    Democratic
-                    <input type="checkbox" value="Independent" v-model="filters">
-                    Independent
-                </div>
-                <div class="col-sm-6">
-                    <input type="checkbox" value="Senator" v-model="chambers"> Senate
-                    <input type="checkbox" value="Representative" v-model="chambers">
-                    House
-                </div>
-            </form>
 
-            <div id="loader" v-if="stateMembers.length==0"></div>
-
-            <div class="divTable container" v-else>
-                <div>
-                    <span>Legislators for State:</span>
-                    <h1>{{myStateId}}</h1>
-                </div>
-
-                <table-state :message="getfilterResult"></table-state>
-
+        <header>
+            <div>
             </div>
-        </did>
+        </header>
+        <!--Table container-->
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Attendance</h2>
+                <p>The Constitution specifies that a majority of members constitutes a quorum to do business in each
+                    house.
+                    Representatives and senators rarely force the presence of a quorum by demanding quorum calls; thus,
+                    in most
+                    cases, debates continue even if a majority is not present.</p>
+
+                <p>The Senate uses roll-call votes; a clerk calls out the names of all the senators, each senator
+                    stating "aye"
+                    or "no" when his or her name is announced. The House reserves roll-call votes for the most formal
+                    matters,
+                    as a roll-call of all 435 representatives takes quite some time; normally, members vote by
+                    electronic
+                    device. In the case of a tie, the motion in question fails. In the Senate, the Vice President may
+                    (if
+                    present) cast the tiebreaking vote.</p>
+            </div>
+            <div class="col-sm-6 loader" id="loader1" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
+                <h2>Senate at a glance</h2>
+                <first-table :message="Party" :totalreps="totalReps" :generalavg="generalAvg"></first-table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 loader" id="loader2" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
+                <h2>Least Engaged (Bottom 10% Attendance)</h2>
+                <most-least-table :message="LeastEngaged" :condition="page"></most-least-table>
+            </div>
+
+
+            <div class="col-sm-6 loader" id="loader3" v-if="allMembers.length==0"></div>
+            <div class="col-sm-6 memberTable" v-else>
+                <h2>Most Engaged (Top 10% Attendance)</h2>
+                <most-least-table :message="MostEngaged" :condition="page"></most-least-table>
+            </div>
+        </div>
+
         <footer class="navbar navbar-default">
             <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="selectState.js"></script>
+    <!-- <script src="pro-congress-113-senate.js"></script> -->
+    <script src="chamber_vue.js"></script>
 </body>
 
 </html>

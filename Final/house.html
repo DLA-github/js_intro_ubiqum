@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
@@ -9,11 +9,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
-    <title>test</title>
+    <title>House Chamber</title>
 </head>
 
-
-<body class="container text-center">
+<body class="container">
     <div id="app">
         <header>
             <div class="flexheader">
@@ -32,7 +31,7 @@
             <div class="container-fluid">
                 <ul class="nav navbar-nav">
                     <li><a href="index.html">Home</a></li>
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Congress 113<span
                                 class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -59,58 +58,61 @@
                         </ul>
 
                     </li>
-                    <li class="dropdown active" id="dropstate">
-                        <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown">Legislators By
-                            State<span class="caret"></span></a>
 
-                        <ul class="dropdown-menu">
-                            <li v-for="state in filteredStates " v-model="st">
-                                <a :href="'LegislatorsbyState.html?='+ state">{{state}}</a>
-                            </li>
-                        </ul>
-
-                    </li>
 
                 </ul>
             </div>
 
         </nav>
-
-        <did class="container">
-            <form class="row" action="">
-                <div class="col-sm-6">
-                    <input type="checkbox" value="Republican" v-model="filters">
-                    Republican
-                    <input type="checkbox" value="Democratic" v-model="filters">
-                    Democratic
-                    <input type="checkbox" value="Independent" v-model="filters">
-                    Independent
+        <!--Table container-->
+        <div class="panel-body container">
+            <h2>Congressmen</h2>
+            <p>The major power of the House is to pass federal legislation that affects the entire country, although its
+                bills must also be passed by the Senate and further agreed to by the U.S. President before becoming law
+                (unless both the House and Senate re-pass the legislation with a two-thirds majority in each chamber).
+                The
+                House has some exclusive powers: the power to initiate revenue bills, to impeach officials (impeached
+                officials are subsequently tried in the Senate), and to elect the U.S. President in case there is no
+                majority in the Electoral College.</p>
+            <p>Each U.S. state is represented in the House in proportion to its population as measured in the census,
+                but
+                every state is entitled to at least one representative. </p>
+            <!-- <div class="text-center">
+                <h1>{{chamber}}</h1>
+            </div> -->
+            <form class="container" name="filter" id="filterForm" action="" method="">
+                <div class="col-sm-6" id="byParty">
+                    <div class="col-sm-3"><input type="checkbox" value="R" v-model="checked">
+                        Republican</input>
+                    </div>
+                    <div class="col-sm-3"><input type="checkbox" value="D" v-model="checked">
+                        Democratic</input>
+                    </div>
+                    <div class="col-sm-3"><input type="checkbox" value="I" v-model="checked">
+                        Independent</input>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <input type="checkbox" value="Senator" v-model="chambers"> Senate
-                    <input type="checkbox" value="Representative" v-model="chambers">
-                    House
+
+                <div class="col-sm-3">
+                    <select name="showByState" id="byState" v-model="state">
+                        <option value="">All States</option>
+                        <option v-for="state in filteredStates" v-bind:value="state">{{state}}
+                    </select>
                 </div>
             </form>
-
-            <div id="loader" v-if="stateMembers.length==0"></div>
-
-            <div class="divTable container" v-else>
-                <div>
-                    <span>Legislators for State:</span>
-                    <h1>{{myStateId}}</h1>
-                </div>
-
-                <table-state :message="getfilterResult"></table-state>
-
+            <div v-if="allMembers.length==0" id="loader"></div>
+            <div class="divTable container" id="memberTable" v-else>
+                <test :message="getFilterTable"></test>
             </div>
-        </did>
+
+        </div>
+
         <footer class="navbar navbar-default">
             <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
         </footer>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="chamber_vue.js"></script>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="selectState.js"></script>
 </body>
 
 </html>

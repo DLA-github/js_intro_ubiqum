@@ -7,11 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Oxygen&display=swap" rel="stylesheet">
-
-    <title>Senate Chamber</title>
+    <title>House Chamber</title>
 </head>
 
 <body class="container">
@@ -36,46 +34,39 @@
         <ol class="breadcrumb">
             <li><a href="index.html">Home</a></li>
             <li><a href="#">Congress 113</a></li>
-            <li class="active">Senate</li>
+            <li class="active">House</li>
         </ol>
 
-
         <div class="container text">
+            <h2>Congressmen</h2>
+            <p>The major power of the House is to pass federal legislation that affects the entire country, although its
+                bills must also be passed by the Senate and further agreed to by the U.S. President before becoming law
+                (unless both the House and Senate re-pass the legislation with a two-thirds majority in each chamber).
+                The
+                House has some exclusive powers: the power to initiate revenue bills, to impeach officials (impeached
+                officials are subsequently tried in the Senate), and to elect the U.S. President in case there is no
+                majority in the Electoral College.</p>
+            <p>Each U.S. state is represented in the House in proportion to its population as measured in the census,
+                but
+                every state is entitled to at least one representative. </p>
 
-            <h2>Senators</h2>
-            <p>First convened in 1789, the composition and powers of the Senate are established in Article
-                One of the U.S.
-                Constitution. Each state is represented by two senators, regardless of population, who serve
-                staggered
-                six-year terms. The Senate has several exclusive powers not granted to the House, including
-                consenting to
-                treaties as a precondition to their ratification and consenting to or confirming
-                appointments of Cabinet
-                secretaries, federal judges, other federal executive officials, military officers,
-                regulatory officials,
-                ambassadors, and other federal uniformed officers, as well as trial of federal officials
-                impeached by the
-                House.</p>
-
-
-            <form class="container " name="filter" id="filterForm" action="" method="">
+            <form class="container" name="filter" id="filterForm" action="" method="">
                 <div class="col-sm-6" id="byParty">
-                    <div class="col-sm-3"><input type="checkbox" value="R" v-model='checked'>
+                    <label class="col-sm-3"><input type="checkbox" value="R" v-model="checked">
                         Republican</input>
-                    </div>
-                    <div class="col-sm-3"><input type="checkbox" value="D" v-model='checked'>
+                    </label>
+                    <label class="col-sm-3"><input type="checkbox" value="D" v-model="checked">
                         Democratic</input>
-                    </div>
-                    <div class="col-sm-3"><input type="checkbox" value="I" v-model='checked'>
+                    </label>
+                    <label class="col-sm-3"><input type="checkbox" value="I" v-model="checked">
                         Independent</input>
-                    </div>
+                    </label>
                 </div>
-                <div class="col-sm-3">
-                    <select v-model="state" name="showByState" id="byState">
-                        <option value="">All States</option>
-                        <option v-for="state in filteredStates" :value="state">{{state}}
-                        </option>
 
+                <div class="col-sm-3">
+                    <select name="showByState" id="byState" v-model="state">
+                        <option value="">All States</option>
+                        <option v-for="state in filteredStates" v-bind:value="state">{{state}}
                     </select>
                 </div>
             </form>
@@ -84,19 +75,15 @@
                 <!-- table vue-component -->
                 <filter-table :message="getFilterTable"></filter-table>
             </div>
+
         </div>
+
         <footer class="navbar navbar-default">
             <div class="footer ">&copy;2016 | All Rigths Reserverd </div>
         </footer>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="chamber_vue.js"></script>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="chamber_vue.js"></script>
-
 </body>
 
-
 </html>
-
-
-
-<p></p>
